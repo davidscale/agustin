@@ -19,14 +19,13 @@ return [
     'controllerMap' => [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
-            'namespace' =        ],
-    ],
-             ],
+            'namespace' => 'common\fixtures',
+          ],
     ],
     'components' => [
- [
- [
-[
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'log' => [
             'targets' => [
                 [

@@ -56,10 +56,12 @@ class LoginForm extends Model
      */
     public function login()
     {
+        $usuario = $this->getUser(); // Se agrega esta linea
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            if($usuario){ // Se agrega este if 
+                return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            }                                    
         }
-        
         return false;
     }
 
@@ -70,8 +72,8 @@ class LoginForm extends Model
      */
     protected function getUser()
     {
-        if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+        if ($this->_user === false) {
+           $this->_user = User::findByUsername($this->username); // Cambiar por modelo de User creado
         }
 
         return $this->_user;
