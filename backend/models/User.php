@@ -1,6 +1,6 @@
 <?php
 
-/* Maybe I should delete this file because backend use Model's User of commond file */
+// Should be delete..
 
 namespace app\models;
 
@@ -10,7 +10,6 @@ use Yii;
  * This is the model class for table "user".
  *
  * @property int $id
- * @property string $username
  * @property string $auth_key
  * @property string $password_hash
  * @property string|null $password_reset_token
@@ -19,6 +18,8 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  * @property string|null $verification_token
+ * @property string $names
+ * @property string|null $password
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -36,10 +37,10 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
+            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at', 'names', 'password'], 'required'],
             [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
+            [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token', 'names', 'password'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
@@ -63,6 +64,8 @@ class User extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'verification_token' => 'Verification Token',
+            'names' => 'Names',
+            'password' => 'Password',
         ];
     }
 }

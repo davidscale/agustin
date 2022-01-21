@@ -80,6 +80,9 @@ class UserController extends Controller
     {
         $model = new User();
 
+        // echo '<pre>'; var_dump(Yii::$app->request->post()); echo '</pre>';
+        // die();
+
         if ($model->load(Yii::$app->request->post())) {
 
             $hash =  Yii::$app->security->generatePasswordHash($model->password);

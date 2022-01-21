@@ -9,19 +9,19 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * User model
+ * This is the model class for table "user".
  *
- * @property integer $id
- * @property string $username
- * @property string $password_hash
- * @property string $password_reset_token
- * @property string $verification_token
- * @property string $email
+ * @property int $id
  * @property string $auth_key
- * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
- * @property string $password write-only password
+ * @property string $password_hash
+ * @property string|null $password_reset_token
+ * @property string $email
+ * @property int $status
+ * @property int $created_at
+ * @property int $updated_at
+ * @property string|null $verification_token
+ * @property string $names
+ * @property string|null $password
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -54,8 +54,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['auth_key', 'password_hash', 'email', 'status', 'created_at', 'updated_at', 'names', 'password'], 'required'],
+            [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
+            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token', 'names', 'password'], 'string', 'max' => 255],
+            [['auth_key'], 'string', 'max' => 32],
+            [['email'], 'unique'],
+            [['password_reset_token'], 'unique'],
+            [['username'], 'unique'],
         ];
     }
 
@@ -110,7 +116,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
