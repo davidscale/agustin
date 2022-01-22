@@ -35,12 +35,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'password_hash',
             'password_reset_token',
             'email:email',
-            'password',
-            'status',
+            [
+                'label' => 'Status',
+                'value' => function ($data) {
+                    if ($data->status == 10) {
+                        return 'Active xd';
+                    } else if ($data->status == 9) {
+                        return 'Inactive';
+                    } else {
+                        return 'Deleted';
+                    }
+                },
+            ],
             'created_at',
             'updated_at',
             'verification_token',
-            'names',
         ],
     ]) ?>
 

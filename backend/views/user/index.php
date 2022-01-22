@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\models\User;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -33,11 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'password_reset_token',
             //'email:email',
             //'status',
-            //'password',
             //'created_at',
             //'updated_at',
             //'verification_token',
-            //'names',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, User $model, $key, $index, $column) {

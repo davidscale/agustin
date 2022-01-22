@@ -3,12 +3,12 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\User;
-use yii\data\ActiveDataProvider;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
 
+use common\models\User;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -41,17 +41,19 @@ class UserController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => User::find(),
-            /*
+            
             'pagination' => [
                 'pageSize' => 50
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'username' => SORT_DESC,
                 ]
             ],
-            */
+           
         ]);
+
+        // echo '<pre>';var_dump($dataProvider);echo '</pre>'; die();
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -76,21 +78,22 @@ class UserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public  function actionCreate()
-    {
+    public function actionCreate() {
         $model = new User();
-
-        // echo '<pre>'; var_dump(Yii::$app->request->post()); echo '</pre>';
-        // die();
+        $date = date_create();
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $hash =  Yii::$app->security->generatePasswordHash($model->password);
-            // echo "hash:" . $hash;
-            $model->password = $hash;
-            if ($model->save()) {
+            $hash =  Yii::$app->security->generatePasswordHash($model->password_hash);
+            $model->password_hash = $hash;   
+            
+            $model->created_at = $model->updated_at = date_timestamp_get($date);
+
+            // echo '<pre>';var_dump($model->attributes);echo '</pre>'; die();
+
+            if ($model->save()) {  
                 $auth = \Yii::$app->authManager;
-                $authorRole = $auth->getRole('admin');  //  only for user type admin
+                $authorRole = $auth->getRole('admin');  /* change to something dinamic */
                 $auth->assign($authorRole, $model->id);
                 //echo "<br>Se ha creado el permiso";
             } else {

@@ -1,0 +1,37 @@
+<?= $form->field($model, 'names')->label('Your Name') ?>
+    <?= $form->field($model, 'username')->label('Your Username') ?>
+
+    <?= $form->field($model, 'status')->dropDownList([10 => 'Active', 9 => 'Inactiv>
+
+    <?= $form->field($model, 'email')->label('Your Email') ?>
+    <?= $form->field($model, 'password')->label('Your Password')->passwordInput() ?>
+
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model common\models\User */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="user-form">
+
+    <?php $form = ActiveForm::begin(); ?>
+
+    <?= $form->field($model, 'names')->label('Your Name') ?>
+    <?= $form->field($model, 'username')->label('Your Username') ?>
+
+    <?= $form->field($model, 'status')->dropDownList([10 => 'Active', 9 => 'Inactive'], ['prompt' => 'Seleccione Uno']) ?>
+
+    <?= $form->field($model, 'email')->label('Your Email') ?>
+    <?= $form->field($model, 'password')->label('Your Password')->passwordInput() ?>
+
+    <div class="form-group">
+        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+
+</div>
