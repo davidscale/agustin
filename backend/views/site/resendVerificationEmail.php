@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-resend-verification-email d-flex flex-column justify-content-center min-vh-100">
-    <div class="my-2 mx-auto p-1 offset-lg-3 col-lg-6">
+    <div class="offset-lg-3 col-lg-6">
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
@@ -26,14 +26,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
         </div>
 
+        <div>
+            <a href="/agustin/site/login">Go back?</a>
+        </div>
+
         <div class="form-group">
             <?= Html::submitButton('Send', ['class' => 'btn btn-primary btn-block', 'name' => 'resend-button']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
-
-        <div>
-            <a href="/agustin/site/login">Go back?</a>
-        </div>
     </div>
 </div>

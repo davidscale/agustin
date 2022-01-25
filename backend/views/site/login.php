@@ -31,15 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'password')->passwordInput() ?>
         </div>
 
+        <div class="my-2 d-flex flex-row justify-content-between">
+            <?= Html::a('Forgot your password?', ['site/request-password-reset']) ?>
+            <?= Html::a("Don't have an account?", ['site/signup']) ?>
+        </div>
+        
         <div class="form-group">
             <?= Html::submitButton('Login', ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
 
-        <div class="mt-2 d-flex flex-row justify-content-between">
-            <?= Html::a('Forgot your password?', ['site/request-password-reset']) ?>
-            <?= Html::a("Don't have an account?", ['site/signup']) ?>
-        </div>
     </div>
 </div>

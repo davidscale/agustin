@@ -31,12 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
-        <div class="form-group">
-            <?= Html::submitButton('Save', ['class' => 'btn btn-primary btn-block', 'name' => 'reset-button']) ?>
+        <div class="my-2">
+            <a href="/agustin/site/login">Go back?</a>
         </div>
 
-        <div>
-            <a href="/agustin/site/login">Go back?</a>
+        <div class="form-group">
+            <?= Html::submitButton('Save', ['class' => 'btn btn-primary btn-block', 'name' => 'reset-button']) ?>
         </div>
     </div>
 </div>
