@@ -57,8 +57,8 @@ return [
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
-            'site/login',
-            'site/logout',
+            'index/',
+            'site/*',
             'admin/*',
             'gii/*',
             'user/*',

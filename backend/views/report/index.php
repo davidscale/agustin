@@ -15,7 +15,7 @@ $token = \yii::$app->request->csrfToken;
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <div class="container text-center py-2 bg-secondary">
-        <form id="form" action="report/index" method="POST">
+        <form id="form" action="view" method="POST">
 
             <?php echo Html::hiddenInput($csrf, $token); ?>
             <!-- No idea, but i need that.. -->
@@ -35,7 +35,7 @@ $token = \yii::$app->request->csrfToken;
             </div>
 
             <div class="form-group">
-                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-success']) ?>
             </div>
         </form>
     </div>

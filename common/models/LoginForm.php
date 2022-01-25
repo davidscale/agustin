@@ -36,17 +36,21 @@ class LoginForm extends Model
      * Validates the password.
      * This method serves as the inline validation for password.
      *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * @return bool if password is correct or not
      */
-    public function validatePassword($attribute, $params)
+    public function validatePassword()
     {
+        $flag = false;
+
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+            if ($user && $user->validatePassword($this->password)) {
+                $flag = true;
+            } else {
+                $this->addError('password', 'Incorrect username or password.');
             }
         }
+        return $flag;
     }
 
     /**
@@ -56,11 +60,8 @@ class LoginForm extends Model
      */
     public function login()
     {
-        $usuario = $this->getUser(); // Se agrega esta linea
-        if ($this->validate()) {
-            if($usuario){ // Se agrega este if 
-                return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-            }                                    
+        if ($this->validate() && $this->validatePassword()) {
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
         return false;
     }
@@ -72,10 +73,9 @@ class LoginForm extends Model
      */
     protected function getUser()
     {
-        if ($this->_user === false) {
-           $this->_user = User::findByUsername($this->username); // Cambiar por modelo de User creado
+        if ($this->username) {
+            $this->_user = User::findByUsername($this->username, false);
         }
-
         return $this->_user;
     }
 }

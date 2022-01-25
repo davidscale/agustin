@@ -13,18 +13,55 @@ $token = \yii::$app->request->csrfToken;
 <div class="report-view">
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
-    <div class="container text-center py-2 bg-secondary">
+    <div class="container text-center py-2">
 
-        <?php var_dump($report[0]); ?>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nº Doc</th>
+                        <th scope="col">Materia</th>
+                        <th scope="col">Cond</th>
+                        <th scope="col">Res</th>
+                        <th scope="col">Nota</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Libro</th>
+                        <th scope="col">Acta</th>
+                        <th scope="col">Fo</th>
+                        <th scope="col">Re</th>
+                        <th scope="col">Re. F</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data as $r) { ?>
 
+                        <tr>
+                            <th scope="row"><?php echo $r->nro_documento ?></th>
+                            <td><?php echo $r->materia ?></td>
+                            <td><?php echo $r->cond_regularidad ?></td>
+                            <td><?php echo $r->resultado ?></td>
+                            <td><?php echo $r->nota ?></td>
+                            <td><?php echo $r->fecha ?></td>
+                            <td><?php echo $r->nro_libro ?></td>
+                            <td><?php echo $r->nro_acta ?></td>
+                            <td><?php echo $r->folio ?></td>
+                            <td><?php echo $r->renglon ?></td>
+                            <td><?php echo $r->renglones_folio ?></td>
+                        </tr>
+
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
 
         <div class="form-group mt-4">
-            <form id="form" action="report/export" method="POST">
+            <form id="form" action="export" method="POST">
 
-                <?php echo Html::hiddenInput($csrf, $token); ?>
-                <!-- No idea, but i need that.. -->
+                <?php echo Html::hiddenInput($csrf, $token); ?>   <!-- No idea, but i need that.. -->
+                <?php echo Html::hiddenInput("kynd_report", $kynd_report); ?>
+                
                 <?= Html::submitButton(Yii::t('app', 'Export'), ['class' => 'btn btn-success']) ?>
-            
+
             </form>
         </div>
 
