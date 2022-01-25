@@ -7,33 +7,47 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
-$this->title = 'SignupForm';
+$this->title = 'Register';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="site-signup">
-    <div class="my-2 mx-auto p-1 offset-lg-3 col-lg-6">
+<style>
+    @media (max-width: 769px) {
+        .col {
+            flex-basis: unset;
+        }
+    }
+</style>
 
-        <img src="https://www.unlz.edu.ar/wp-content/uploads/2019/09/rectorado.jpg" class="img-thumbnail img-fluid" alt="img-log">
+<div class="site-signup d-flex flex-column justify-content-center min-vh-100">
+    <div class="offset-lg-3 col-lg-6">
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
+        <img src="<?php echo $pic; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
+
+        <h3 class="text-center mt-1"><?php echo $ubication; ?></h3>
+
         <?php $form = ActiveForm::begin(['id' => 'signup-form']); ?>
 
-        <div class="form-group">
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+        <div class="row">
+            <div class="col">
+                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+            </div>
+
+            <div class="col">
+                <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+            </div>
         </div>
 
-        <div class="form-group">
-            <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
-        </div>
+        <div class="row">
+            <div class="col">
+                <?= $form->field($model, 'password')->passwordInput() ?>
+            </div>
 
-        <div class="form-group">
-            <?= $form->field($model, 'password')->passwordInput() ?>
-        </div>
-
-        <div class="form-group">
-            <?= $form->field($model, 're_password')->passwordInput() ?>
+            <div class="col">
+                <?= $form->field($model, 're_password')->passwordInput() ?>
+            </div>
         </div>
 
         <div class="form-group">

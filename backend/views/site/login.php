@@ -11,12 +11,14 @@ $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="site-login">
-    <div class="my-2 mx-auto p-1 offset-lg-3 col-lg-6">
-
-        <img src="https://www.unlz.edu.ar/wp-content/uploads/2019/09/rectorado.jpg" class="img-thumbnail img-fluid" alt="img-log">
+<div class="site-login d-flex flex-column justify-content-center min-vh-100">
+    <div class="offset-lg-3 col-lg-6">
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
+
+        <img src="<?php echo $pic; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
+
+        <h3 class="text-center m-0"><?php echo $ubication; ?></h3>
 
         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
@@ -35,11 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php ActiveForm::end(); ?>
 
-        <div class="mt-2">
+        <div class="mt-2 d-flex flex-row justify-content-between">
             <?= Html::a('Forgot your password?', ['site/request-password-reset']) ?>
-            <br>
-            <?= Html::a('Need verification email?', ['site/resend-verification-email']) ?>
-            <br>
             <?= Html::a("Don't have an account?", ['site/signup']) ?>
         </div>
     </div>

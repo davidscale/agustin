@@ -1,0 +1,24 @@
+.container-fluid {
+    height: 100vh;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    section {
+      height: 100vh;
+      scroll-snap-align: start;
+    }
+    .section-one {
+      background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+    }
+    .section-two {
+      background-image: linear-gradient(to top, #d9afd9 0%, #97d9e1 100%);
+      .carousel {
+        width: 70vw;
+      }
+      .carousel-inner {
+        border-radius: 5em;
+      }
+    }
+    .section-three {
+      background-image: linear-gradient(to top, #96fbc4 0%, #f9f586 100%);
+    }
+  }

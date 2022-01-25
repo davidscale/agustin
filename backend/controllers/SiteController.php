@@ -22,6 +22,9 @@ use Yii;
  */
 class SiteController extends Controller
 {
+    public $pic = 'https://www.unlz.edu.ar/wp-content/uploads/2019/09/rectorado.jpg';
+    public $ubication = 'Facultad de Derecho';
+
     /**
      * {@inheritdoc}
      */
@@ -89,9 +92,9 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {    //  will came here after finish validates
             return $this->goHome();
         }
-        
+
         $this->layout = 'blank';
-        
+
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();         //  declare will back to actionLogin. So validates are finish
@@ -101,6 +104,8 @@ class SiteController extends Controller
 
         return $this->render('login', [
             'model' => $model,
+            'pic' => $this->pic,
+            'ubication' => $this->ubication,
         ]);
     }
 
@@ -143,6 +148,8 @@ class SiteController extends Controller
 
         return $this->render('signup', [
             'model' => $model,
+            'pic' => $this->pic,
+            'ubication' => $this->ubication,
         ]);
     }
 
@@ -168,6 +175,8 @@ class SiteController extends Controller
 
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
+            'pic' => $this->pic,
+            'ubication' => $this->ubication,
         ]);
     }
 
@@ -194,6 +203,8 @@ class SiteController extends Controller
 
         return $this->render('resetPassword', [
             'model' => $model,
+            'pic' => $this->pic,
+            'ubication' => $this->ubication,
         ]);
     }
 
@@ -218,28 +229,5 @@ class SiteController extends Controller
 
         Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
         return $this->goHome();
-    }
-
-    /**
-     * Resend verification email
-     *
-     * @return mixed
-     */
-    public function actionResendVerificationEmail()
-    {
-        $this->layout = 'blank';
-        
-        $model = new ResendVerificationEmailForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-                return $this->goHome();
-            }
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to resend verification email for the provided email address.');
-        }
-        
-        return $this->render('resendVerificationEmail', [
-            'model' => $model
-        ]);
     }
 }
