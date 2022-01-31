@@ -8,7 +8,10 @@ use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
 $this->title = 'Register';
+
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Home'), 'url' => '/'];
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <style>

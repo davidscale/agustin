@@ -2,13 +2,15 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = 'Facultadex';
+
 ?>
+
 <div class="site-index">
 
     <div class="jumbotron text-center bg-transparent">
-        <h1 class="display-4">Congratulations!</h1>
 
+        <h1 class="display-4">Congratulations!</h1>
 
         <p class="lead">Hello World.</p>
     </div>

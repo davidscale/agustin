@@ -26,36 +26,40 @@ AppAsset::register($this);
 </head>
 
 <body class="d-flex flex-column h-100">
-    <?php $this->beginBody() ?>
 
     <header>
         <?php
         NavBar::begin([
-            'brandLabel' => Yii::$app->name,
+            'brandLabel' => '<img src="https://static.semrush.com/blog/uploads/media/43/b0/43b0b9a04c8a433a0c52360c9cc9aaf2/seo-guide-to-yoast-for-wordpress.svg" style="display:inline; vertical-align: top; height:4vh;"/>' . Yii::$app->name,
             'brandUrl' => Yii::$app->homeUrl,
             'options' => [
                 'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
             ],
         ]);
+
         $menuItems = [
-            ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'Reports', 'url' => ['/report']],
+            ['label' => 'Users', 'url' => ['/user']],
+            ['label' => 'Admin', 'url' => ['/admin']],
         ];
-        if (Yii::$app->user->isGuest) {
-            $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-        } else {
+
+
+        if (!Yii::$app->user->isGuest) {
             $menuItems[] = '<li>'
                 . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    '👋🏻' . Yii::$app->user->identity->email,
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()
                 . '</li>';
         }
+
         echo Nav::widget([
-            'options' => ['class' => 'navbar-nav'],
+            'options' => ['class' => 'navbar-nav ml-auto'],
             'items' => $menuItems,
         ]);
+
         NavBar::end();
         ?>
     </header>

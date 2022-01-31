@@ -32,29 +32,33 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['login', 'error'],
                         'allow' => true,
-                        'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    [
+                        'actions' => ['resetPassword', 'verify-email'],
+                        'allow' => true,
+                        // 'roles' => ['?'],
+                    ]
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
             ],
         ];
     }
+    // 'actions' => ['index', 'signup', 'login', 'requestPasswordReset', 'resetPassword', '-e'],
 
     /**
      * {@inheritdoc}
@@ -89,18 +93,17 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {    //  will came here after finish validates
+        if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
-        $this->layout = 'blank';
-
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();         //  declare will back to actionLogin. So validates are finish
+            return $this->actionIndex();
         }
 
         $model->password = '';
+        $this->layout = 'blank';
 
         return $this->render('login', [
             'model' => $model,
@@ -129,28 +132,6 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
-    }
-
-    /**
-     * Signs user up.
-     *
-     * @return mixed
-     */
-    public function actionSignup()
-    {
-        $this->layout = 'blank';
-
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
-        }
-
-        return $this->render('signup', [
-            'model' => $model,
-            'pic' => $this->pic,
-            'ubication' => $this->ubication,
-        ]);
     }
 
     /**
@@ -189,11 +170,15 @@ class SiteController extends Controller
      */
     public function actionResetPassword($token)
     {
+        $this->layout = 'blank';
+
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
+        /* highlight_string("<?php\n\$data =\n" . print_r($model, true) . ";\n?>");die; */
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
             Yii::$app->session->setFlash('success', 'New password saved.');
@@ -217,17 +202,20 @@ class SiteController extends Controller
      */
     public function actionVerifyEmail($token)
     {
+        $this->layout = 'blank';
+        
         try {
             $model = new VerifyEmailForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
         if (($user = $model->verifyEmail()) && Yii::$app->user->login($user)) {
+            $this->layout = 'main';
             Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
-            return $this->goHome();
+        } else {
+            Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
         return $this->goHome();
     }
 }

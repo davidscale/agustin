@@ -9,6 +9,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 
 use common\models\User;
+
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -23,7 +24,7 @@ class UserController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -41,7 +42,7 @@ class UserController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => User::find(),
-            
+
             'pagination' => [
                 'pageSize' => 50
             ],
@@ -50,7 +51,7 @@ class UserController extends Controller
                     'username' => SORT_DESC,
                 ]
             ],
-           
+
         ]);
 
         // echo '<pre>';var_dump($dataProvider);echo '</pre>'; die();
@@ -78,28 +79,11 @@ class UserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $model = new User();
-        $date = date_create();
 
-        if ($model->load(Yii::$app->request->post())) {
-
-            $hash =  Yii::$app->security->generatePasswordHash($model->password_hash);
-            $model->password_hash = $hash;   
-            
-            $model->created_at = $model->updated_at = date_timestamp_get($date);
-
-            // echo '<pre>';var_dump($model->attributes);echo '</pre>'; die();
-
-            if ($model->save()) {  
-                $auth = \Yii::$app->authManager;
-                $authorRole = $auth->getRole('admin');  /* change to something dinamic */
-                $auth->assign($authorRole, $model->id);
-                //echo "<br>Se ha creado el permiso";
-            } else {
-                die('Error al guardar');
-            }
-
+        if ($model->load(Yii::$app->request->post()) && $model->create()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -119,9 +103,19 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+
+            $model->username = $_POST['User']['username'];
+            $model->email = $_POST['User']['email'];
+            $model->status = $_POST['User']['status'];
+
+            var_dump($model);die;
+            //  TODO:: AUN NO ACTUALIZA
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
+
 
         return $this->render('update', [
             'model' => $model,

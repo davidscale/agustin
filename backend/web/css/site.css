@@ -1,9 +1,11 @@
 body {
+    /* background-image: url("https://www.unlz.edu.ar/wp-content/uploads/2019/09/rectorado.jpg"); */
     background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+    /* opacity: 0.6; */
 }
 
 main > .container {

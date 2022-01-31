@@ -34,6 +34,19 @@ return [
             // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.gmail.com',
+                'username' => 'arm.group.utn@gmail.com',
+                'password' => 'pmzaxjfrkoaxihbf',
+                'port' => '587',
+                'encryption' => 'tls',
+            ],
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -58,11 +71,13 @@ return [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
             'index/',
-            'site/*',
-            'admin/*',
-            'gii/*',
-            'user/*',
-            'report/*'
+            'site/resetPassword',
+            'site/verify-email',
+            // 'site/logout',
+            // 'admin/*',
+            // 'gii/*',
+            // 'user/*',
+            // 'report/*',
             //'some-controller/some-action',
             // The actions listed here will be allowed to everyone including guests.
             // So, 'admin/*' should not appear here in the production, of course.

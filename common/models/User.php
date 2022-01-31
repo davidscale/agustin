@@ -12,6 +12,7 @@ use yii\web\IdentityInterface;
  * This is the model class for table "user".
  *
  * @property int $id
+ * @property string $username
  * @property string $auth_key
  * @property string $password_hash
  * @property string|null $password_reset_token
@@ -20,7 +21,6 @@ use yii\web\IdentityInterface;
  * @property int $created_at
  * @property int $updated_at
  * @property string|null $verification_token
- * @property string $username
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -28,6 +28,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+    public $re_password;
 
     /**
      * {@inheritdoc}
@@ -42,9 +43,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function behaviors()
     {
-        return [
-            TimestampBehavior::className(),
-        ];
+        return [TimestampBehavior::class];
     }
 
     /**
@@ -52,15 +51,56 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function rules()
     {
-        return [
-            [['password_hash', 'email', 'status', 'created_at', 'updated_at', 'username'], 'required'],
-            [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
+        return 
+        [
+            ['username', 'trim'],
+            ['username', 'required'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 8, 'max' => 8],
+            ['username', 'match', 'pattern' => '/^[0-9]{8}$/'], // DNI arg format
+
+            ['email', 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'match', 'pattern' => '/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/'],
+            ['email', 'string', 'max' => 50],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+
+            ['password_hash', 'required'],
+            ['password_hash', 'match', 'pattern' => '/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/'],
+
+            ['re_password', 'required'],
+            ['re_password', 'compare', 'compareAttribute' => 'password_hash', 'type' => 'string'],
+            
+            [['status'], 'required'],
+            
+            [['status', 'created_at', 'updated_at'], 'trim'],
             [['status', 'created_at', 'updated_at'], 'integer'],
-            [['password_hash', 'password_reset_token', 'email', 'verification_token', 'username'], 'string', 'max' => 255],
-            [['auth_key'], 'string', 'max' => 32],
-            [['email'], 'unique'],
-            [['password_reset_token'], 'unique'],
         ];
+    }
+
+    /**
+     * Creates user up.
+     *
+     * @return bool whether the creating new account was successful and email was sent
+     */
+    public function create()
+    {
+        $date = date_create();
+        
+        if (!$this->validate()) {
+            return null;
+        }
+
+        $this->email = strtolower($this->email);
+        $this->setPassword($this->password_hash);
+        $this->generateAuthKey();
+        $this->generateEmailVerificationToken();
+        $this->created_at = $this->updated_at = date_timestamp_get($date);
+
+        // echo '<pre>';var_dump($this->attributes);echo '</pre>'; die();
+
+        return $this->save(false) && $this->sendEmail($this);
     }
 
     /**
@@ -68,7 +108,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return self::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -86,12 +126,9 @@ class User extends ActiveRecord implements IdentityInterface
      * @param boolean $active
      * @return static|null
      */
-    public static function findByUsername($username, $active = true)
+    public static function findByUsername($username)
     {
-        if ($active) {
-            return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
-        }
-        return static::findOne(['username' => $username]);
+        return self::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -101,12 +138,9 @@ class User extends ActiveRecord implements IdentityInterface
      * @param boolean $active
      * @return static|null
      */
-    public static function findByEmail($email, $active = true)
+    public static function findByEmail($email)
     {
-        if ($active) {
-            return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
-        }
-        return static::findOne(['email' => $email]);
+        return self::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -117,11 +151,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (!self::isPasswordResetTokenValid($token)) {
             return null;
         }
 
-        return static::findOne([
+        return self::findOne([
             'password_reset_token' => $token,
             'status' => self::STATUS_ACTIVE,
         ]);
@@ -135,7 +169,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByVerificationToken($token)
     {
-        return static::findOne([
+        return self::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
         ]);
@@ -233,5 +267,24 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * Sends confirmation email to user
+     * @param User $user user model to with email should be send
+     * @return bool whether the email was sent
+     */
+    protected function sendEmail($user)
+    {
+        return Yii::$app
+            ->mailer
+            ->compose(
+                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
+                ['user' => $user]
+            )
+            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+            ->setTo($this->email)
+            ->setSubject('Account registration at ' . Yii::$app->name)
+            ->send();
     }
 }

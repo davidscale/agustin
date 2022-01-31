@@ -4,12 +4,12 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Report Kynd: ' . $kynd_report;
+$this->title = 'Tipo de Reporte: ' . $model->report_name;
 
-$csrf = \yii::$app->request->csrfParam;
-$token = \yii::$app->request->csrfToken;
-
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reports'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="report-view">
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
@@ -36,17 +36,17 @@ $token = \yii::$app->request->csrfToken;
                     <?php foreach ($data as $r) { ?>
 
                         <tr>
-                            <th scope="row"><?php echo $r->nro_documento ?></th>
-                            <td><?php echo $r->materia ?></td>
-                            <td><?php echo $r->cond_regularidad ?></td>
-                            <td><?php echo $r->resultado ?></td>
-                            <td><?php echo $r->nota ?></td>
-                            <td><?php echo $r->fecha ?></td>
-                            <td><?php echo $r->nro_libro ?></td>
-                            <td><?php echo $r->nro_acta ?></td>
-                            <td><?php echo $r->folio ?></td>
-                            <td><?php echo $r->renglon ?></td>
-                            <td><?php echo $r->renglones_folio ?></td>
+                            <th scope="row"><?php echo $r['nro_documento'] ?></th>
+                            <td><?php echo $r['materia'] ?></td>
+                            <td><?php echo $r['cond_regularidad'] ?></td>
+                            <td><?php echo $r['resultado'] ?></td>
+                            <td><?php echo $r['nota'] ?></td>
+                            <td><?php echo $r['fecha'] ?></td>
+                            <td><?php echo $r['nro_libro'] ?></td>
+                            <td><?php echo $r['nro_acta'] ?></td>
+                            <td><?php echo $r['folio'] ?></td>
+                            <td><?php echo $r['renglon'] ?></td>
+                            <td><?php echo $r['renglones_folio'] ?></td>
                         </tr>
 
                     <?php } ?>
@@ -57,9 +57,6 @@ $token = \yii::$app->request->csrfToken;
         <div class="form-group mt-4">
             <form id="form" action="export" method="POST">
 
-                <?php echo Html::hiddenInput($csrf, $token); ?>   <!-- No idea, but i need that.. -->
-                <?php echo Html::hiddenInput("kynd_report", $kynd_report); ?>
-                
                 <?= Html::submitButton(Yii::t('app', 'Export'), ['class' => 'btn btn-success']) ?>
 
             </form>

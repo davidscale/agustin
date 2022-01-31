@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap4\ActiveForm */
-/* @var $model \frontend\models\ResetPasswordForm */
+/* @var $model \common\models\ResetPasswordForm */
 
 use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
@@ -13,22 +13,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="site-reset-password d-flex flex-column justify-content-center min-vh-100">
     <div class="offset-lg-3 col-lg-6">
+
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
         <img src="<?php echo $pic; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
 
-        <h3 class="text-center mt-1"><?php echo $ubication; ?></h3>
+        <h3 class="text-center mb-2"><?php echo $ubication; ?></h3>
 
         <?php $form = ActiveForm::begin(['id' => 'reset-password-form']); ?>
 
-        <div class="row">
-            <div class="col">
-                <?= $form->field($model, 'password')->passwordInput(['autofocus' => true]) ?>
-            </div>
+        <div class="form-group">
+            <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'placeholder' => 'Password..'])->label(false) ?>
+        </div>
 
-            <div class="col">
-                <?= $form->field($model, 're_password')->passwordInput(['autofocus' => true]) ?>
-            </div>
+        <div class="form-group">
+            <?= $form->field($model, 're_password')->passwordInput(['autofocus' => true, 'placeholder' => 'Repeat Password..'])->label(false) ?>
+        </div>
+
+        <div class="form-group">
         </div>
 
         <div class="my-2">

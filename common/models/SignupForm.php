@@ -27,6 +27,9 @@ class SignupForm extends Model
             ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 8, 'max' => 8],
 
+            // DNI arg format
+            ['username', 'match', 'pattern' => '/^[0-9]{8}$/'],
+
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -35,10 +38,10 @@ class SignupForm extends Model
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
             ['password', 'required'],
-            ['password', 'match', 'pattern' => '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,12})'],
+            ['password', 'match', 'pattern' => '/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/'],
 
             ['re_password', 'required'],
-            ['re_password', 'compare', 'compareAttribute' => 'password', 'type' => ''],
+            ['re_password', 'compare', 'compareAttribute' => 'password', 'type' => 'string'],
         ];
     }
 
@@ -57,10 +60,11 @@ class SignupForm extends Model
         $user->username = $this->username;
         $user->email = strtolower($this->email);
         $user->setPassword($this->password);
+        $user->status = 9;                          /* STATUS_INACTIVE = 9; */
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
-        return $user->save() && $this->sendEmail($user);
+        return $user->save(false) && $this->sendEmail($user);
     }
 
     /**
@@ -76,7 +80,7 @@ class SignupForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();

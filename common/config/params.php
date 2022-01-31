@@ -1,9 +1,14 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'supportEmail' => 'support@example.com',
+    'adminEmail' => 'arm.group.utn@gmail.com',
     'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
-    'user.passwordResetTokenExpire' => 3600,
-    'user.passwordMinLength' => 8,
+    'senderName' => 'User',
+    'user.passwordResetTokenExpire' => 3600 * 24,
+    // 'user.passwordMinLength' => 8,
+
+    'languajes' => [
+        'en' => 'english',
+        'es' => 'spanish',
+        'po' => 'portuguese',
+    ]
 ];

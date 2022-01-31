@@ -23,7 +23,8 @@ class ResendVerificationEmailForm extends Model
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'exist',
+            [
+                'email', 'exist',
                 'targetClass' => '\common\models\User',
                 'filter' => ['status' => User::STATUS_INACTIVE],
                 'message' => 'There is no user with this email address.'
@@ -44,7 +45,14 @@ class ResendVerificationEmailForm extends Model
         ]);
 
         if ($user === null) {
-            return false;
+            $user = User::findOne([
+                'username' => $this->email,
+                'status' => User::STATUS_INACTIVE
+            ]);
+
+            if ($user === null) {
+                return false;
+            }
         }
 
         return Yii::$app
@@ -53,7 +61,7 @@ class ResendVerificationEmailForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
