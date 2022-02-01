@@ -54,8 +54,6 @@ class UserController extends Controller
 
         ]);
 
-        // echo '<pre>';var_dump($dataProvider);echo '</pre>'; die();
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);

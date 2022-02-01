@@ -21,7 +21,7 @@ class ReportController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['view', 'index', 'periodo'],
+                        'actions' => ['view', 'index', 'periodo', 'generate'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -48,12 +48,31 @@ class ReportController extends Controller
     public function actionView($model)
     {
         if ($data = $model->generate()) {
+
+            Yii::$app->session->setFlash(
+                'warning',
+                'Nota: sólo se le muestran los primeros 10 (diez) resultados. Al generar Excel se le generará el resultado completo'
+            );
+
             return $this->render('view', [
                 'model' => $model,
                 'data' => $data
             ]);
         }
 
+        return $this->actionIndex();
+    }
+
+    public function actionGenerate(){
+
+        $model = new ReportForm();
+        if ($model->load(Yii::$app->request->post()) && $model->generateExcel()) {
+
+            Yii::$app->session->setFlash(
+                'success',
+                'Excel generado con éxito'
+            );
+        }
         return $this->actionIndex();
     }
 
@@ -66,14 +85,10 @@ class ReportController extends Controller
 
             $myEcho = '<option value="">Seleccione Período</option>';
             foreach ($periodos as $p) {
-                $myEcho .= '<option value="' . $p->periodo . '"> ' . $p->periodo . '</option>';
-
-
-                // TODO:: not working with name :c
-                // $myEcho .= '<option value="' . $p->periodo . '"> ' . $p->nombre . '</option>';
+                $myEcho .= '<option value="' . $p->periodo . '"> ' . utf8_encode($p->nombre) . '</option>';
             }
 
-            echo json_encode($myEcho);
+            echo $myEcho;
         }
     }
 }

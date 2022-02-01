@@ -58,6 +58,7 @@ class VerifyEmailCest
         $I->canSee('Your email has been confirmed!');
         $I->canSee('Congratulations!', 'h1');
         $I->see('Logout (test.test)', 'form button[type=submit]');
+        /* TODO:: USER must change his pass (twice) */
 
         $I->seeRecord('common\models\User', [
            'username' => 'test.test',

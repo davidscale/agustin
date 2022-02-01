@@ -53,8 +53,8 @@ class SgaPeriodo extends \yii\db\ActiveRecord
             [['fecha_inicio', 'fecha_fin'], 'safe'],
             [['nombre'], 'string', 'max' => 100],
             [['descripcion'], 'string', 'max' => 255],
-            [['anio_academico'], 'exist', 'skipOnError' => true, 'targetClass' => SgaAniosAcademico::className(), 'targetAttribute' => ['anio_academico' => 'anio_academico']],
-            [['periodo_generico'], 'exist', 'skipOnError' => true, 'targetClass' => SgaPeriodosGenerico::className(), 'targetAttribute' => ['periodo_generico' => 'periodo_generico']],
+            [['anio_academico'], 'exist', 'skipOnError' => true, 'targetClass' => SgaAniosAcademico::class, 'targetAttribute' => ['anio_academico' => 'anio_academico']],
+            [['periodo_generico'], 'exist', 'skipOnError' => true, 'targetClass' => SgaPeriodosGenerico::class, 'targetAttribute' => ['periodo_generico' => 'periodo_generico']],
         ];
     }
 
@@ -81,7 +81,7 @@ class SgaPeriodo extends \yii\db\ActiveRecord
      */
     public function getAnioAcademico()
     {
-        return $this->hasOne(SgaAniosAcademico::className(), ['anio_academico' => 'anio_academico']);
+        return $this->hasOne(SgaAniosAcademico::class, ['anio_academico' => 'anio_academico']);
     }
 
     /**
@@ -91,7 +91,7 @@ class SgaPeriodo extends \yii\db\ActiveRecord
      */
     public function getPeriodoGenerico()
     {
-        return $this->hasOne(SgaPeriodosGenerico::className(), ['periodo_generico' => 'periodo_generico']);
+        return $this->hasOne(SgaPeriodosGenerico::class, ['periodo_generico' => 'periodo_generico']);
     }
 
     /**
@@ -101,7 +101,7 @@ class SgaPeriodo extends \yii\db\ActiveRecord
      */
     public function getSgaLlamadosTurnos()
     {
-        return $this->hasMany(SgaLlamadosTurno::className(), ['periodo' => 'periodo']);
+        return $this->hasMany(SgaLlamadosTurno::class, ['periodo' => 'periodo']);
     }
 
     /**
@@ -111,7 +111,7 @@ class SgaPeriodo extends \yii\db\ActiveRecord
      */
     public function getSgaPeriodosInscripcions()
     {
-        return $this->hasMany(SgaPeriodosInscripcion::className(), ['periodo' => 'periodo']);
+        return $this->hasMany(SgaPeriodosInscripcion::class, ['periodo' => 'periodo']);
     }
 
     /**
@@ -121,7 +121,7 @@ class SgaPeriodo extends \yii\db\ActiveRecord
      */
     public function getSgaPeriodosLectivos()
     {
-        return $this->hasMany(SgaPeriodosLectivo::className(), ['periodo' => 'periodo']);
+        return $this->hasMany(SgaPeriodosLectivo::class, ['periodo' => 'periodo']);
     }
 
     /**
@@ -131,6 +131,6 @@ class SgaPeriodo extends \yii\db\ActiveRecord
      */
     public function getSgaTurnosExamen()
     {
-        return $this->hasMany(SgaTurnosExaman::className(), ['periodo' => 'periodo']);
+        return $this->hasMany(SgaTurnosExaman::class, ['periodo' => 'periodo']);
     }
 }

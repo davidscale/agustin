@@ -2,9 +2,9 @@
 
 namespace backend\models;
 
+use common\models\User;
 use Yii;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
 
 /**
  * Report form
@@ -43,16 +43,15 @@ class ReportForm extends Model
     public function generate()
     {
         if ($this->validate()) {
-            
+
             $query = $this->getQuery();
-            
+
             $data = (object) Yii::$app->db_guarani->createCommand($query)->queryAll();
-            
-            if($data){
+
+            if ($data) {
                 $this->_report = $data;
                 return $this->_report;
-            }
-            else{
+            } else {
                 $this->hasErrors('La búsqueda no encontró resultados');
             }
         }
@@ -150,10 +149,20 @@ class ReportForm extends Model
                     JOIN mdp_personas_documentos AS pd ON alu.persona = pd.persona
 
                     WHERE co.periodo_lectivo = " . $this->periodo . "
-                    AND co.ubicacion = " . $this->ubicacion . "AND acta.origen = 'P'
+                    AND co.ubicacion = " . $this->ubicacion . " AND acta.origen = 'P'
                     ORDER BY 1,3";
                 break;
         }
         return $rta;
+    }
+
+
+
+    public function generateExcel()
+    {
+        if ($this->generate()) {
+            return true;
+        }
+        return false;
     }
 }

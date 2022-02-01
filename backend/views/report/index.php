@@ -50,6 +50,13 @@ $ubicaciones = ArrayHelper::map(
             flex-basis: unset;
         }
     }
+
+    .spinner-grow {
+        left: 50%;
+        top: 50%;
+
+        display: none;
+    }
 </style>
 
 <div class="site-report d-flex flex-column justify-content-top">
@@ -58,6 +65,10 @@ $ubicaciones = ArrayHelper::map(
         <h1 class="text-center mb-4"><?= Html::encode($this->title) ?></h1>
 
         <?php $form = ActiveForm::begin(['id' => 'report-form']); ?>
+
+        <div class="spinner-grow text-success position-fixed" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
 
         <div class="row">
             <div class="col">
@@ -82,7 +93,7 @@ $ubicaciones = ArrayHelper::map(
             </div>
 
             <div class="col">
-                <?= $form->field($model, 'ubicacion')->dropDownList($ubicaciones, ['prompt' => 'Seleccione Ubicación']); ?>
+                <?= $form->field($model, 'ubicacion')->dropDownList($ubicaciones); ?>
             </div>
         </div>
 
@@ -103,8 +114,9 @@ $ubicaciones = ArrayHelper::map(
             </div>
         </div>
 
-        <div class="form-group my-2">
-            <?= Html::submitButton('Search', ['class' => 'btn btn-primary btn-block', 'name' => 'report-button']) ?>
+        <div class="form-group my-2 d-flex justify-content-around">
+            <?= Html::submitButton('Export', ['class' => 'btn btn-success', 'name' => 'export-button', 'onclick' => 'changeAction()']) ?>
+            <?= Html::submitButton('Search', ['class' => 'btn btn-primary', 'name' => 'report-button']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
@@ -112,16 +124,19 @@ $ubicaciones = ArrayHelper::map(
 </div>
 
 <script type="text/javascript">
+    function changeAction() {
+        document.getElementById("report-form").action = 'report/generate';
+    }
+
     function getPeriodo(year, url) {
         $.ajax({
             url: url + '/report/periodo',
             type: 'POST',
-            dataType: 'json',
             data: {
                 year: year
             },
-            success: function(response) {
-                $('#dropDownList_periodo').html(response);
+            success: function(res) {
+                $('#dropDownList_periodo').html(res);
             },
             error: function() {
                 console.log("Error");

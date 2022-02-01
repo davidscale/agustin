@@ -2,12 +2,13 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-
 $this->title = 'Tipo de Reporte: ' . $model->report_name;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reports'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$count = 1;
+
 ?>
 
 <div class="report-view">
@@ -33,8 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($data as $r) { ?>
 
+                    <?php foreach ($data as $r) { ?>
                         <tr>
                             <th scope="row"><?php echo $r['nro_documento'] ?></th>
                             <td><?php echo $r['materia'] ?></td>
@@ -49,17 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?php echo $r['renglones_folio'] ?></td>
                         </tr>
 
+                        <?php if ($count == 10) { break; } else { $count++; } ?>
                     <?php } ?>
+
                 </tbody>
             </table>
-        </div>
-
-        <div class="form-group mt-4">
-            <form id="form" action="export" method="POST">
-
-                <?= Html::submitButton(Yii::t('app', 'Export'), ['class' => 'btn btn-success']) ?>
-
-            </form>
         </div>
 
     </div>
