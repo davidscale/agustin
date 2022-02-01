@@ -68,6 +68,8 @@ class ReportController extends Controller
         $model = new ReportForm();
         if ($model->load(Yii::$app->request->post()) && $model->generateExcel()) {
 
+            $model->generateExcel();
+
             Yii::$app->session->setFlash(
                 'success',
                 'Excel generado con éxito'

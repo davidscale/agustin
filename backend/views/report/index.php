@@ -125,7 +125,7 @@ $ubicaciones = ArrayHelper::map(
 
 <script type="text/javascript">
     function changeAction() {
-        document.getElementById("report-form").action = 'report/generate';
+        document.getElementById("report-form").action = 'generate';
     }
 
     function getPeriodo(year, url) {
