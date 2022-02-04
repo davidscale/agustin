@@ -23,11 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
         <div class="form-group">
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'placeholder' => 'Username or Email..'])->label(false) ?>
+            <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'placeholder' => 'Username or Email..', 'value' => 'admin@admin.com'])->label(false) ?>
         </div>
 
         <div class="form-group">
-            <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'placeholder' => 'Password..'])->label(false) ?>
+            <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'placeholder' => 'Password..', 'value' => 'Dev_2021'])->label(false) ?>
         </div>
 
         <div class="my-2 d-flex flex-row justify-content-end">

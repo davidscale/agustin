@@ -4,8 +4,8 @@
 /* @var $form yii\bootstrap4\ActiveForm */
 /* @var $model \common\models\ResetPasswordForm */
 
-use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Html;
 
 $this->title = 'Reset Password';
 $this->params['breadcrumbs'][] = $this->title;
@@ -40,5 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="form-group">
             <?= Html::submitButton('Save', ['class' => 'btn btn-primary btn-block', 'name' => 'reset-button']) ?>
         </div>
+
+        <?php ActiveForm::end(); ?>
     </div>
 </div>

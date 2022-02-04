@@ -67,6 +67,7 @@ class ResetPasswordForm extends Model
         $user->setPassword($this->password);
         $user->removePasswordResetToken();
         $user->generateAuthKey();
+        $user->status = $user::STATUS_ACTIVE;
 
         return $user->save(false);
     }

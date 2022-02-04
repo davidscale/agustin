@@ -96,6 +96,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->setPassword($this->password_hash);
         $this->generateAuthKey();
         $this->generateEmailVerificationToken();
+        $this->generatePasswordResetToken();
         $this->created_at = $this->updated_at = date_timestamp_get($date);
 
         // echo '<pre>';var_dump($this->attributes);echo '</pre>'; die();
@@ -157,7 +158,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         return self::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            // 'status' => self::STATUS_ACTIVE,
         ]);
     }
 

@@ -70,7 +70,7 @@ return [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
             'index/',
-            'site/resetPassword',
+            'site/reset-password',
             'site/verify-email',
             // 'site/logout',
             // 'admin/*',

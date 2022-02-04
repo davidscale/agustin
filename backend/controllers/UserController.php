@@ -82,6 +82,8 @@ class UserController extends Controller
         $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->create()) {
+            
+            Yii::$app->session->setFlash('success', $model->username . ' Created!');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

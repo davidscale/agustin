@@ -9,11 +9,10 @@ use yii\filters\AccessControl;
 use yii\base\InvalidArgumentException;
 
 use common\models\LoginForm;
-use common\models\SignupForm;
+use common\models\User;
 use common\models\VerifyEmailForm;
 use common\models\ResetPasswordForm;
 use common\models\PasswordResetRequestForm;
-use common\models\ResendVerificationEmailForm;
 
 use Yii;
 
@@ -44,9 +43,9 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['resetPassword', 'verify-email'],
+                        'actions' => ['reset-password', 'verify-email', 'request-password-reset'],
                         'allow' => true,
-                        // 'roles' => ['?'],
+                        'roles' => ['?'],
                     ]
                 ],
             ],
@@ -144,6 +143,7 @@ class SiteController extends Controller
         $this->layout = 'blank';
 
         $model = new PasswordResetRequestForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
@@ -178,13 +178,15 @@ class SiteController extends Controller
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        /* highlight_string("<?php\n\$data =\n" . print_r($model, true) . ";\n?>");die; */
-
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+
+            $this->layout = 'main';
             Yii::$app->session->setFlash('success', 'New password saved.');
 
             return $this->goHome();
         }
+
+        // echo '<pre>';var_dump($this->pic);echo '</pre>'; die();
 
         return $this->render('resetPassword', [
             'model' => $model,
@@ -202,18 +204,16 @@ class SiteController extends Controller
      */
     public function actionVerifyEmail($token)
     {
-        $this->layout = 'blank';
-        
         try {
             $model = new VerifyEmailForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        if (($user = $model->verifyEmail()) && Yii::$app->user->login($user)) {
-            $this->layout = 'main';
-            Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
-        } else {
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
+
+        if ($model) {
+            $model = User::findByVerificationToken($token);
+            // echo '<pre>';var_dump($model->verification_token);echo '</pre>'; die();
+            return $this->actionResetPassword($model->password_reset_token);
         }
 
         return $this->goHome();
