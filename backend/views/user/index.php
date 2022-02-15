@@ -13,7 +13,7 @@ $this->title = Yii::t('app', 'List of Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="user-index">
+<div class="user-index bg-color">
 
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

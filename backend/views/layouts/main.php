@@ -21,6 +21,8 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     <link rel="stylesheet" href="site.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Questrial">
+
 
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
@@ -38,6 +40,21 @@ AppAsset::register($this);
                 'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
             ],
         ]);
+
+        // TODO:: admin - user
+
+        /* if(user){
+            $menuItems = [
+                ['label' => 'Reports', 'url' => ['/report']],
+            ];
+        }
+        else{
+            $menuItems = [
+                ['label' => 'Reports', 'url' => ['/report']],
+                ['label' => 'Users', 'url' => ['/user']],
+                ['label' => 'Admin', 'url' => ['/admin']],
+            ];
+        } */
 
         $menuItems = [
             ['label' => 'Reports', 'url' => ['/report']],

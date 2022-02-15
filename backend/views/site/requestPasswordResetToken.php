@@ -12,19 +12,21 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-request-password-reset d-flex flex-column justify-content-center min-vh-100">
-    <div class="offset-lg-3 col-lg-6">
+    <div class="offset-lg-3 col-lg-6 bg-color">
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
         <img src="<?php echo $pic; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
 
-        <h3 class="text-center m-0"><?php echo $ubication; ?></h3>
+        <h3 class="text-center mb-2"><?php echo $ubication; ?></h3>
 
         <?php $form = ActiveForm::begin(['id' => 'reset-form']); ?>
 
-        <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+        <div class="form-group">
+            <?= $form->field($model, 'email')->textInput(['autofocus' => true, 'placeholder' => 'Email..'])->label(false) ?>
+        </div>
 
-        <div class="my-2">
+        <div class="my-2 d-flex flex-row justify-content-end">
             <a href="/agustin/site/login">Go back?</a>
         </div>
 

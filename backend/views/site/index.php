@@ -6,7 +6,7 @@ $this->title = 'Facultadex';
 
 ?>
 
-<div class="site-index">
+<div class="site-index bg-color">
 
     <div class="jumbotron text-center bg-transparent">
 

@@ -9,7 +9,7 @@ $this->title = Yii::t('app', 'Create User');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-create">
+<div class="user-create bg-color">
 
     <h1 class="text-center mb-4"><?= Html::encode($this->title) ?></h1>
 

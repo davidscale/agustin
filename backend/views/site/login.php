@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-login d-flex flex-column justify-content-center min-vh-100">
-    <div class="offset-lg-3 col-lg-6">
+    <div class="offset-lg-3 col-lg-6 bg-color">
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

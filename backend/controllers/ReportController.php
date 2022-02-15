@@ -2,7 +2,10 @@
 
 namespace backend\controllers;
 
+use app\models\SgaActa;
+use app\models\SgaComision;
 use app\models\SgaPeriodo;
+use app\models\SgaPeriodoLectivo;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -21,7 +24,14 @@ class ReportController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['view', 'index', 'periodo', 'generate'],
+                        'actions' => [
+                            'view',
+                            'index',
+                            'periodo',
+                            'comision',
+                            'acta',
+                            'generate'
+                        ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -41,10 +51,14 @@ class ReportController extends Controller
         }
 
         return $this->render('index', [
-            'model' => $model
+            'model' => new ReportForm()
         ]);
     }
 
+    /**
+     * Renders a view and applies layout if available
+     * @param ReportForm $model
+     */
     public function actionView($model)
     {
         if ($data = $model->generate()) {
@@ -63,8 +77,8 @@ class ReportController extends Controller
         return $this->actionIndex();
     }
 
-    public function actionGenerate(){
-
+    public function actionGenerate()
+    {
         $model = new ReportForm();
         if ($model->load(Yii::$app->request->post()) && $model->generateExcel()) {
 
@@ -81,16 +95,51 @@ class ReportController extends Controller
     public function actionPeriodo()
     {
         if ($_POST['year']) {
-            $periodos = SgaPeriodo::find()
+            $data = SgaPeriodo::find()
                 ->where(['anio_academico' => $_POST['year']])
                 ->all();
 
-            $myEcho = '<option value="">Seleccione Período</option>';
-            foreach ($periodos as $p) {
-                $myEcho .= '<option value="' . $p->periodo . '"> ' . utf8_encode($p->nombre) . '</option>';
+            $rta = '<option value="">Seleccione Período</option>';
+            foreach ($data as $p) {
+                $rta .= '<option value="' . $p->periodo . '"> ' . utf8_encode($p->nombre) . '</option>';
             }
 
-            echo $myEcho;
+            echo $rta;
+        }
+    }
+
+    public function actionComision()
+    {
+        if ($_POST['comision']) {
+            $data = SgaComision::find()
+                ->where(['periodo_lectivo' => $_POST['comision']])
+                ->all();
+
+            $rta = '<option value="">Seleccione Comision</option>';
+            foreach ($data as $p) {
+                $rta .= '<option value="' . $p->comision . '"> ' . utf8_encode($p->nombre) . '</option>';
+            }
+
+            echo $rta;
+        }
+    }
+
+    public function actionActa()
+    {
+        if ($_POST['comision']) {
+            $data = SgaActa::find()
+                ->where([
+                    'comision' => $_POST['comision'],
+                    'origen' => 'P'
+                ])
+                ->all();
+
+            $rta = '<option value="">Seleccione Acta</option>';
+            foreach ($data as $p) {
+                $rta .= '<option value="' . $p->nro_acta . '"> ' . utf8_encode($p->nro_acta) . '</option>';
+            }
+
+            echo $rta;
         }
     }
 }

@@ -34,7 +34,7 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['error'],
                         'allow' => true,
                     ],
                     [
@@ -43,7 +43,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['reset-password', 'verify-email', 'request-password-reset'],
+                        'actions' => ['login', 'reset-password', 'verify-email', 'request-password-reset'],
                         'allow' => true,
                         'roles' => ['?'],
                     ]
@@ -212,7 +212,6 @@ class SiteController extends Controller
 
         if ($model) {
             $model = User::findByVerificationToken($token);
-            // echo '<pre>';var_dump($model->verification_token);echo '</pre>'; die();
             return $this->actionResetPassword($model->password_reset_token);
         }
 

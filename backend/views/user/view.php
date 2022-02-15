@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
 ?>
-<div class="user-view">
+<div class="user-view bg-color">
 
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
