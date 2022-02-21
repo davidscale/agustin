@@ -13,6 +13,7 @@ use common\models\User;
 use common\models\VerifyEmailForm;
 use common\models\ResetPasswordForm;
 use common\models\PasswordResetRequestForm;
+use backend\models\Parametro;
 
 use Yii;
 
@@ -21,9 +22,6 @@ use Yii;
  */
 class SiteController extends Controller
 {
-    public $pic = 'https://www.unlz.edu.ar/wp-content/uploads/2019/09/rectorado.jpg';
-    public $ubication = 'Facultad de Derecho';
-
     /**
      * {@inheritdoc}
      */
@@ -75,6 +73,18 @@ class SiteController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        $param = Parametro::find()
+            ->where(['parametro' => 1])
+            ->one();
+
+        Yii::$app->params['facultad'] = $param->facultad;
+        Yii::$app->params['bg_url_img'] = $param->bg_url_img;
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Displays homepage.
      *
@@ -106,8 +116,6 @@ class SiteController extends Controller
 
         return $this->render('login', [
             'model' => $model,
-            'pic' => $this->pic,
-            'ubication' => $this->ubication,
         ]);
     }
 
@@ -156,8 +164,6 @@ class SiteController extends Controller
 
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
-            'pic' => $this->pic,
-            'ubication' => $this->ubication,
         ]);
     }
 
@@ -190,8 +196,6 @@ class SiteController extends Controller
 
         return $this->render('resetPassword', [
             'model' => $model,
-            'pic' => $this->pic,
-            'ubication' => $this->ubication,
         ]);
     }
 

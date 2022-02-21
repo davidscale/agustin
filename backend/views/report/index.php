@@ -106,9 +106,9 @@ $ubicaciones = ArrayHelper::map(
         <?php ActiveForm::end(); ?>
     </div>
 
-    <div id="spinner" class="d-flex align-items-center" style="display: none !important;">
+    <div id="spinner" class="d-flex align-items-center bg-color mt-2" style="display: none !important;">
         <strong>Cargando...</strong>
-        <div class="spinner-border ml-auto" role="status" aria-hidden="true" style="width: 2rem; height: 2rem;"></div>
+        <div class="spinner-border ml-auto mt-2" role="status" aria-hidden="true" style="width: 2rem; height: 2rem;"></div>
     </div>
 
 </div>

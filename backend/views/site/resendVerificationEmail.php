@@ -16,9 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
-        <img src="<?php echo $pic; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
+        <img src="<?php echo Yii::$app->params['bg_url_img']; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
 
-        <h3 class="text-center m-0"><?php echo $ubication; ?></h3>
+        <h3 class="text-center mb-2"><?php echo Yii::$app->params['facultad']; ?></h3>
 
         <?php $form = ActiveForm::begin(['id' => 'resend-verification-email-form']); ?>
 

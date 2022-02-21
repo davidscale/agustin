@@ -12,7 +12,7 @@ $this->title = 'SignupForm';
 <div class="site-signup p-1 my-2">
     <div class="offset-lg-3 col-lg-6">
 
-        <img src="https://www.unlz.edu.ar/wp-content/uploads/2019/09/rectorado.jpg" class="img-thumbnail img-fluid" alt="img-log">
+    <img src="<?php echo Yii::$app->params['bg_url_img']; ?>" class="img-thumbnail img-fluid my-1" alt="img-log">
 
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
