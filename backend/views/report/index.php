@@ -67,7 +67,7 @@ $ubicaciones = ArrayHelper::map(
                 ]); ?>
         </div>
 
-        <div class="col forms first-form second-form">
+        <div class="col forms form-0 form-1 form-2">
             <?= $form->field($model, 'anio')
                 ->dropDownList(
                     $anios,
@@ -79,15 +79,15 @@ $ubicaciones = ArrayHelper::map(
                 ); ?>
         </div>
 
-        <div class="col forms first-form">
+        <div class="col forms form-0">
             <?= $form->field($model, 'propuesta')->dropDownList($propuestas, ['prompt' => 'Seleccione Propuesta']); ?>
         </div>
 
-        <div class="col forms first-form">
+        <div class="col forms form-0 form-2">
             <?= $form->field($model, 'ubicacion')->dropDownList($ubicaciones); ?>
         </div>
 
-        <div class="col forms first-form second-form">
+        <div class="col forms form-0 form-1 form-2">
             <?= $form->field($model, 'periodo')
                 ->dropDownList(
                     [],
@@ -97,7 +97,7 @@ $ubicaciones = ArrayHelper::map(
                     ]
                 ); ?>
         </div>
-        
+
         <div class="form-group my-2 d-flex justify-content-around">
             <?= Html::submitButton('View', ['class' => 'btn btn-primary', 'name' => 'btn-view', 'onClick' => 'showSpinner()']) ?>
             <?= Html::submitButton('Excel', ['class' => 'btn btn-success', 'name' => 'btn-excel', 'onClick' => 'changeAction()']) ?>
@@ -116,7 +116,7 @@ $ubicaciones = ArrayHelper::map(
 <script type="text/javascript">
     function showInputsByForm(num) {
         if (!num) {
-            return;
+            num = 0;
         }
 
         let form = $('.forms');
@@ -124,12 +124,17 @@ $ubicaciones = ArrayHelper::map(
 
         switch (num) {
             case "0":
-                form = $('.first-form');
+                form = $('.form-0');
                 form.css("display", "inherit")
                 break;
 
             case "1":
-                form = $('.second-form');
+                form = $('.form-1');
+                form.css("display", "inherit")
+                break;
+
+            case "2":
+                form = $('.form-2');
                 form.css("display", "inherit")
                 break;
         }
@@ -168,21 +173,18 @@ $ubicaciones = ArrayHelper::map(
     }
 
     function changeAction() {
-        // TODO:: sometimes have problems.. (check in incognit)
-        document.getElementById("report-form").action = '';
         document.getElementById("report-form").action = 'report/generate';
 
         showSpinner();
+        setTimeout("hideSpinner()", 3000); // after 3 secs
     }
 
     function showSpinner() {
-
         form = $('#spinner');
         form.css("display", "inherit");
+    }
 
-        setTimeout(function() {
-            form.css("display", "none");
-        }, 3000);
-
+    function hideSpinner() {
+        document.getElementById("spinner").style.visibility = "hidden";
     }
 </script>

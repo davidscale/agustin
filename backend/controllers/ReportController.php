@@ -5,12 +5,12 @@ namespace backend\controllers;
 use app\models\SgaActa;
 use app\models\SgaComision;
 use app\models\SgaPeriodo;
-use app\models\SgaPeriodoLectivo;
+
+use backend\models\ReportForm;
+
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use backend\models\ReportForm;
-use yii\helpers\ArrayHelper;
 
 class ReportController extends Controller
 {
@@ -80,13 +80,18 @@ class ReportController extends Controller
     public function actionGenerate()
     {
         $model = new ReportForm();
-        if ($model->load(Yii::$app->request->post()) && $model->generateExcel()) {
+        if ($model->load(Yii::$app->request->post()) && $model->generate()) {
 
             $model->generateExcel();
 
             Yii::$app->session->setFlash(
                 'success',
                 'Excel generado con éxito'
+            );
+        } else {
+            Yii::$app->session->setFlash(
+                'error',
+                'Error al momento de generar excel'
             );
         }
         return $this->actionIndex();

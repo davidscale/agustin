@@ -2,14 +2,13 @@
 
 namespace backend\models;
 
-use app\models\SgaPeriodo;
-use app\models\SgaPeriodoLectivo;
-use common\models\User;
 use Yii;
-use yii\base\Model;
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use yii\base\Model;
+use app\models\SgaPeriodo;
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PHPOffice\PhpSpreadsheet\Style\Alignment;
 
@@ -22,7 +21,8 @@ class ReportForm extends Model
 {
     public $reports_name = [
         0 => 'Notas de Cursada',
-        1 => 'Rendimiento Académico de Cátedras'
+        1 => 'Rendimiento Académico de Cátedras',
+        2 => 'Alumnos Inscriptos a Cursada',
     ];
 
     public $report_name;
@@ -65,6 +65,16 @@ class ReportForm extends Model
                                     return $('#report_name').val() == 1;
                                 }"
             ],
+            [
+                ['anio', 'ubicacion', 'periodo'],
+                'required',
+                'when' => function ($model) {
+                    return $model->report_name == 2;
+                },
+                'whenClient' => "function (attribute, value) {
+                                    return $('#report_name').val() == 2;
+                                }"
+            ],
         ];
     }
 
@@ -80,7 +90,7 @@ class ReportForm extends Model
             $query = $this->getQuery();
             $data = Yii::$app->db_guarani->createCommand($query)->queryAll();
 
-            if ($data) {
+        if ($data) {
                 $this->_report = (object) $data;
 
                 $this->setTitles();
@@ -136,10 +146,13 @@ class ReportForm extends Model
                     JOIN sga_alumnos AS alu ON ad.alumno = alu.alumno
                     JOIN mdp_personas AS per ON alu.persona = per.persona
                     JOIN mdp_personas_documentos AS pd ON alu.persona = pd.persona
-                    JOIN sga_periodos_lectivos AS pl ON pl.periodo = " . $this->periodo . " AND co.periodo_lectivo = pl.periodo_lectivo
+                    JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo
                     JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
 
-                    WHERE co.ubicacion = " . $this->ubicacion . " AND acta.origen = 'P'
+                    WHERE pl.periodo = $this->periodo 
+                    AND co.ubicacion = $this->ubicacion 
+                    AND acta.origen = 'P'
+
                     ORDER BY 1,3";
                 break;
 
@@ -158,13 +171,40 @@ class ReportForm extends Model
                         LEFT JOIN sga_catedras ca ON co.catedra = ca.catedra
                         LEFT JOIN sga_elementos e ON co.elemento = e.elemento
 
-                        JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo AND pl.periodo = " . $this->periodo . "
+                        JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo 
                         JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
 
-                        WHERE a.origen = 'P'
+                        WHERE a.origen = 'P' AND pl.periodo = $this->periodo
                         
                         GROUP BY ca.nombre, co.elemento, materia
                         ORDER BY 1, 2";
+                break;
+
+            case 2:
+                $rta = "SELECT 
+                            com.nombre AS comision,
+                            cat.nombre AS catedra,
+                            pd.nro_documento,
+                            per.apellido,
+                            per.nombres,
+                            pc.email,
+                            per.usuario,
+                            ele.nombre AS materia 
+                        FROM mdp_personas AS per
+                        LEFT JOIN mdp_personas_documentos AS pd ON per.persona = pd.persona
+                        LEFT JOIN mdp_personas_contactos AS pc ON per.persona = pc.persona
+                        LEFT JOIN sga_alumnos AS alu ON per.persona = alu.persona
+                        LEFT JOIN sga_insc_cursada AS insc ON alu.alumno = insc.alumno
+                        LEFT JOIN sga_comisiones AS com ON insc.comision = com.comision
+                        LEFT JOIN sga_catedras AS cat ON com.catedra = cat.catedra
+                        LEFT JOIN sga_elementos AS ele ON com.elemento = ele.elemento
+                        JOIN sga_periodos_lectivos AS pl ON com.periodo_lectivo = pl.periodo_lectivo
+                        JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
+
+                        WHERE pl.periodo = $this->periodo
+                        AND com.ubicacion = $this->ubicacion
+                        AND pc.contacto_tipo = 'MP'
+                        ORDER BY 3;";
                 break;
         }
         return $rta;
@@ -192,6 +232,12 @@ class ReportForm extends Model
                 $this->name_arc = 'Rendimiento de Cátedras';
                 break;
 
+            case 2:
+                $this->title = 'ALUMNOS INSCRIPTOS A CURSADA';
+                $this->subtitle = '';
+                $this->name_arc = 'Alumnos Inscriptos';
+                break;
+
             default:
                 # code...
                 break;
@@ -213,6 +259,10 @@ class ReportForm extends Model
                 case 1:
                     $this->excelOfRendimiento();
                     break;
+
+                    case 2:
+                        $this->excelOfAlumnos();
+                        break;
 
                 default:
                     return false;
@@ -492,6 +542,144 @@ class ReportForm extends Model
                 ->setCellValue('D' . $i, '=(+C' . $i . '/I' . $i . ')')
                 ->setCellValue('F' . $i, '=(+E' . $i . '/I' . $i . ')')
                 ->setCellValue('H' . $i, '=(+G' . $i . '/I' . $i . ')');
+            $i++;
+        }
+
+        $sheet->getColumnDimension($min_word)->setAutoSize(false);
+        $sheet->getColumnDimension($max_word)->setAutoSize(true);
+
+        $sheet->getStyle($min_word . '1')->applyFromArray($title_style);
+        $sheet->getStyle($min_word . '3')->applyFromArray($subtitle_style);
+
+        $sheet->getStyle($min_word . '4:' . $max_word . '4')->applyFromArray($header_style);
+        $sheet->getStyle($min_word . '4:' . $max_word . '4')->applyFromArray($header_border);
+        $sheet->getStyle($min_word . '4:' . $max_word . '4')
+            ->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('f8cbad');
+
+
+        $sheet->getStyle('D4:D' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('0.00%');
+        $sheet->getStyle('F4:F' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('0.00%');
+        $sheet->getStyle('H4:H' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('0.00%');
+
+
+        $sheet->getStyle('A4:' . $max_word . $sheet->getHighestRow())->applyFromArray($table_style);
+        $sheet->getStyle('A4:' . $max_word . $sheet->getHighestRow())->applyFromArray($table_border);
+
+        $spreadsheet->getActiveSheet()->setTitle($this->name_arc);
+        $spreadsheet->setActiveSheetIndex(0);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $this->name_arc . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+
+    private function excelOfAlumnos(): void
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $title_style = array(
+            'font'  => array(
+                'bold'  => true,
+                'color' => array('rgb' => '000000'),
+                'size'  => 14,
+                'name'  => 'Calibri'
+            ),
+            'alignment' => array(
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $subtitle_style = array(
+            'font'  => array(
+                'bold'  => true,
+                'color' => array('rgb' => '000000'),
+                'size'  => 11,
+                'name'  => 'Calibri'
+            ),
+            'alignment' => array(
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $header_style = array(
+            'font'  => array(
+                'bold'  => true,
+                'color' => array('rgb' => '000000'),
+                'size'  => 11,
+                'name'  => 'Calibri'
+            ),
+            'alignment' => array(
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $header_border = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => Border::BORDER_THIN, //BORDER_THIN BORDER_MEDIUM BORDER_HAIR
+                    'color' => array('rgb' => '000000')
+                )
+            )
+        );
+
+        $table_border = array(
+            'borders' => array(
+                'outline' => array(
+                    'borderStyle' => Border::BORDER_THIN, //BORDER_THIN BORDER_MEDIUM BORDER_HAIR
+                    'color' => array('rgb' => '000000')
+                )
+            )
+        );
+
+        $table_style = array(
+            'alignment' => array(
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $min_word = 'A';
+        $max_word = 'H';
+
+        $sheet->mergeCells($min_word . '1:' . $max_word . '1');
+        $sheet->mergeCells($min_word . '3:' . $max_word . '3');
+
+        $sheet->setCellValue($min_word . '1', $this->title);
+        $sheet->setCellValue($min_word . '3', $this->subtitle);
+
+        $sheet
+            ->setCellValue($min_word . '4', 'comision')
+            ->setCellValue('B4', 'catedra')
+            ->setCellValue('C4', 'nro_documento')
+            ->setCellValue('D4', 'apellido')
+            ->setCellValue('E4', 'nombres')
+            ->setCellValue('F4', 'email')
+            ->setCellValue('G4', 'usuario')
+            ->setCellValue($max_word . '4', 'materia');
+
+        foreach (range($min_word, $max_word) as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $i = 5;
+        foreach ($this->_report as $row) {
+            $sheet
+                ->setCellValue($min_word . $i, $row['comision'])
+                ->setCellValue('B' . $i, $row['catedra'])
+                ->setCellValue('C' . $i, $row['nro_documento'])
+                ->setCellValue('D' . $i, $row['apellido'])
+                ->setCellValue('E' . $i, $row['nombres'])
+                ->setCellValue('F' . $i, $row['email'])
+                ->setCellValue('G' . $i, $row['usuario'])
+                ->setCellValue($max_word . $i, $row['materia']);
             $i++;
         }
 

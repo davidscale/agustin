@@ -79,6 +79,32 @@ $data_aux = array_slice((array) $data, 0, 10);
                         <?php } ?>
 
                     </tbody>
+                <?php } else if ($model->report_name == 2) { ?>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Comision</th>
+                            <th scope="col">Catedra</th>
+                            <th scope="col">Nº Doc</th>
+                            <th scope="col">Apellido</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Materia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php foreach ($data_aux as $r) { ?>
+                            <tr>
+                                <th scope="row"><?php echo $r['comision'] ?></th>
+                                <td><?php echo $r['catedra'] ?></td>
+                                <td><?php echo $r['nro_documento'] ?></td>
+                                <td><?php echo $r['apellido'] ?></td>
+                                <td><?php echo $r['nombres'] ?></td>
+                                <td><?php echo $r['materia'] ?></td>
+                            </tr>
+                        <?php } ?>
+
+                    </tbody>
                 <?php } ?>
 
             </table>
