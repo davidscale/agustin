@@ -7,7 +7,8 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
-$this->title = 'Reset Password';
+// NEEEEDS translate
+$this->title = Yii::t('app', 'Reset Password');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -23,22 +24,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php $form = ActiveForm::begin(['id' => 'reset-password-form']); ?>
 
         <div class="form-group">
-            <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'placeholder' => 'Password..'])->label(false) ?>
+            <?= $form->field($model, 'password')->passwordInput() ?>
         </div>
 
         <div class="form-group">
-            <?= $form->field($model, 're_password')->passwordInput(['autofocus' => true, 'placeholder' => 'Repeat Password..'])->label(false) ?>
+            <?= $form->field($model, 're_password')->passwordInput() ?>
+        </div>
+
+        <div class="my-2 d-flex flex-row justify-content-end">
+            <?= Html::a(Yii::t('app', 'Login?'), ['site/login']) ?>
         </div>
 
         <div class="form-group">
-        </div>
-
-        <div class="my-2">
-            <a href="/agustin/site/login">Go back?</a>
-        </div>
-
-        <div class="form-group">
-            <?= Html::submitButton('Save', ['class' => 'btn btn-primary btn-block', 'name' => 'reset-button']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Send'), ['class' => 'btn btn-primary btn-block', 'name' => 'send-button']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use common\models\User;
+use backend\models\User;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -35,11 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'value' => function ($model) {
                     if ($model->status == '10') {
-                        return 'Active';
+                        return Yii::t('app', 'Active');
                     } else if ($model->status == '9') {
-                        return 'Inactive';
+                        return Yii::t('app', 'Inactive');
                     } else {
-                        return 'Deleted';
+                        return Yii::t('app', 'Deleted');
                     }
                 }
             ],

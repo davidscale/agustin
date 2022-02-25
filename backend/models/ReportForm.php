@@ -19,10 +19,11 @@ require '../../vendor/autoload.php';
  */
 class ReportForm extends Model
 {
+    //  TODO:: must be translated
     public $reports_name = [
-        0 => 'Notas de Cursada',
-        1 => 'Rendimiento Académico de Cátedras',
-        2 => 'Alumnos Inscriptos a Cursada',
+        0 => 'Course Notes',
+        1 => 'Academic Performance of Chairs',
+        2 => 'Students Enrolled to Course',
     ];
 
     public $report_name;
@@ -79,6 +80,20 @@ class ReportForm extends Model
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'report_name' => Yii::t('app', 'Kynd of Report'),
+            'propuesta' => Yii::t('app', 'Proposal'),
+            'anio' => Yii::t('app', 'Year'),
+            'ubicacion' => Yii::t('app', 'Ubication'),
+            'periodo' => Yii::t('app', 'Period'),
+        ];
+    }
+
+    /**
      * Valid if fields are OK and return report
      *
      * @return Report|null
@@ -90,13 +105,11 @@ class ReportForm extends Model
             $query = $this->getQuery();
             $data = Yii::$app->db_guarani->createCommand($query)->queryAll();
 
-        if ($data) {
+            if ($data) {
                 $this->_report = (object) $data;
 
                 $this->setTitles();
                 return $this->_report;
-            } else {
-                $this->hasErrors('La búsqueda no encontró resultados');
             }
         }
         return null;
@@ -260,9 +273,9 @@ class ReportForm extends Model
                     $this->excelOfRendimiento();
                     break;
 
-                    case 2:
-                        $this->excelOfAlumnos();
-                        break;
+                case 2:
+                    $this->excelOfAlumnos();
+                    break;
 
                 default:
                     return false;
@@ -435,7 +448,6 @@ class ReportForm extends Model
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
-        exit;
     }
 
     private function excelOfRendimiento(): void
@@ -577,7 +589,6 @@ class ReportForm extends Model
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
-        exit;
     }
 
     private function excelOfAlumnos(): void
@@ -715,6 +726,5 @@ class ReportForm extends Model
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
-        exit;
     }
 }

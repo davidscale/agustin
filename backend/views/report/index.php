@@ -4,7 +4,6 @@
 /* @var $form yii\bootstrap4\ActiveForm */
 /* @var $model \commond\models\ReportForm */
 
-use app\models\SgaActa;
 use app\models\SgaAniosAcademico;
 use app\models\SgaPropuesta;
 use app\models\SgaUbicacion;
@@ -14,7 +13,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
 
-$this->title = 'Search Report';
+$this->title = Yii::t('app', 'Search Report');
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -72,7 +71,7 @@ $ubicaciones = ArrayHelper::map(
                 ->dropDownList(
                     $anios,
                     [
-                        'prompt' => 'Seleccione Año Académico',
+                        'prompt' => Yii::t('app', 'Select Academic Year'),
                         // 'required' => true,
                         'onchange' => 'getPeriodos(this.value,"' . Yii::$app->request->baseUrl . '")'
                     ]
@@ -80,7 +79,7 @@ $ubicaciones = ArrayHelper::map(
         </div>
 
         <div class="col forms form-0">
-            <?= $form->field($model, 'propuesta')->dropDownList($propuestas, ['prompt' => 'Seleccione Propuesta']); ?>
+            <?= $form->field($model, 'propuesta')->dropDownList($propuestas, ['prompt' => Yii::t('app', 'Select Proposal')]); ?>
         </div>
 
         <div class="col forms form-0 form-2">
@@ -92,22 +91,22 @@ $ubicaciones = ArrayHelper::map(
                 ->dropDownList(
                     [],
                     [
-                        'prompt' => 'Seleccione Período',
+                        'prompt' => Yii::t('app', 'Select Period'),
                         'id' => 'dropDownList_periodo',
                     ]
                 ); ?>
         </div>
 
         <div class="form-group my-2 d-flex justify-content-around">
-            <?= Html::submitButton('View', ['class' => 'btn btn-primary', 'name' => 'btn-view', 'onClick' => 'showSpinner()']) ?>
-            <?= Html::submitButton('Excel', ['class' => 'btn btn-success', 'name' => 'btn-excel', 'onClick' => 'changeAction()']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Preview'), ['class' => 'btn btn-primary', 'name' => 'btn-view', 'onClick' => 'showSpinner()']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Download'), ['class' => 'btn btn-success', 'name' => 'btn-excel', 'onClick' => 'changeAction()']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
     </div>
 
     <div id="spinner" class="d-flex align-items-center bg-color mt-2" style="display: none !important;">
-        <strong>Cargando...</strong>
+        <strong><?= Yii::t('app', 'Loading') ?> ...</strong>
         <div class="spinner-border ml-auto mt-2" role="status" aria-hidden="true" style="width: 2rem; height: 2rem;"></div>
     </div>
 

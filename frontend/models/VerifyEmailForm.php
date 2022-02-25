@@ -2,7 +2,7 @@
 
 namespace frontend\models;
 
-use common\models\User;
+use backend\models\User;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 
@@ -50,3 +50,4 @@ class VerifyEmailForm extends Model
         return $user->save(false) ? $user : null;
     }
 }
+

@@ -19,8 +19,7 @@ AppAsset::register($this);
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <link rel="stylesheet" href="site.css?v=<?php echo time(); ?>">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Questrial">
 
 
@@ -41,26 +40,17 @@ AppAsset::register($this);
             ],
         ]);
 
-        // TODO:: admin - user
-
-        /* if(user){
+        if (Yii::$app->user->can('admin')) {
             $menuItems = [
-                ['label' => 'Reports', 'url' => ['/report']],
+                ['label' => Yii::t('app', 'Reports'), 'url' => ['/report']],
+                ['label' => Yii::t('app', 'Users'), 'url' => ['/user']],
+                ['label' => Yii::t('app', 'Admin'), 'url' => ['/admin']],
+            ];
+        } else if (Yii::$app->user->can('user')) {
+            $menuItems = [
+                ['label' => Yii::t('app', 'Reports'), 'url' => ['/report']],
             ];
         }
-        else{
-            $menuItems = [
-                ['label' => 'Reports', 'url' => ['/report']],
-                ['label' => 'Users', 'url' => ['/user']],
-                ['label' => 'Admin', 'url' => ['/admin']],
-            ];
-        } */
-
-        $menuItems = [
-            ['label' => 'Reports', 'url' => ['/report']],
-            ['label' => 'Users', 'url' => ['/user']],
-            ['label' => 'Admin', 'url' => ['/admin']],
-        ];
 
 
         if (!Yii::$app->user->isGuest) {

@@ -8,8 +8,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\base\InvalidArgumentException;
 
+use backend\models\User;
 use common\models\LoginForm;
-use common\models\User;
 use common\models\VerifyEmailForm;
 use common\models\ResetPasswordForm;
 use common\models\PasswordResetRequestForm;
@@ -41,7 +41,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['login', 'reset-password', 'verify-email', 'request-password-reset'],
+                        'actions' => ['login', 'reset-password', 'verify-email', 'request-password-reset', 'change-language'],
                         'allow' => true,
                         'roles' => ['?'],
                     ]
@@ -55,7 +55,6 @@ class SiteController extends Controller
             ],
         ];
     }
-    // 'actions' => ['index', 'signup', 'login', 'requestPasswordReset', 'resetPassword', '-e'],
 
     /**
      * {@inheritdoc}
@@ -79,8 +78,8 @@ class SiteController extends Controller
             ->where(['parametro' => 1])
             ->one();
 
-        Yii::$app->params['facultad'] = $param->facultad;
-        Yii::$app->params['bg_url_img'] = $param->bg_url_img;
+        Yii::$app->params['facultad'] = Yii::t('app', $param->facultad);
+        Yii::$app->params['bg_url_img'] = Yii::t('app', $param->bg_url_img);
 
         return parent::beforeAction($action);
     }
@@ -108,6 +107,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
             return $this->actionIndex();
         }
 
@@ -154,12 +154,12 @@ class SiteController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Check your email for further instructions'));
 
                 return $this->goHome();
             }
 
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+            Yii::$app->session->setFlash('error', Yii::t('app', 'Sorry, we are unable to reset password for the provided email address'));
         }
 
         return $this->render('requestPasswordResetToken', [
@@ -187,7 +187,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
 
             $this->layout = 'main';
-            Yii::$app->session->setFlash('success', 'New password saved.');
+            Yii::$app->session->setFlash('success', Yii::t('app', 'New password saved'));
 
             return $this->goHome();
         }
@@ -220,5 +220,13 @@ class SiteController extends Controller
         }
 
         return $this->goHome();
+    }
+
+    public function actionChangelanguage()
+    {
+        if (isset($_POST['lang']) && $_POST['lang'] != null) {
+            Yii::$app->language = $_POST['lang'];
+            Yii::$app->session['lang'] = Yii::$app->language;
+        }
     }
 }

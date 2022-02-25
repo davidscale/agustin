@@ -51,7 +51,7 @@ class ReportController extends Controller
         }
 
         return $this->render('index', [
-            'model' => new ReportForm()
+            'model' => $model
         ]);
     }
 
@@ -65,16 +65,23 @@ class ReportController extends Controller
 
             Yii::$app->session->setFlash(
                 'warning',
-                'Nota: sólo se le muestran los primeros 10 (diez) resultados. Al generar Excel se le generará el resultado completo'
+                Yii::t('app', 'Note: Only the first 10 (ten) results are shown to you. When generating Excel, the complete result will be generated')
             );
 
             return $this->render('view', [
                 'model' => $model,
                 'data' => $data
             ]);
+        } else {
+            Yii::$app->session->setFlash(
+                'error',
+                Yii::t('app', 'Search found no results')
+            );
         }
 
-        return $this->actionIndex();
+        return $this->render('index', [
+            'model' => new ReportForm()
+        ]);
     }
 
     public function actionGenerate()
@@ -86,15 +93,17 @@ class ReportController extends Controller
 
             Yii::$app->session->setFlash(
                 'success',
-                'Excel generado con éxito'
+                Yii::t('app', 'Excel generated successfully')
             );
         } else {
             Yii::$app->session->setFlash(
                 'error',
-                'Error al momento de generar excel'
+                Yii::t('app', 'Search found no results')
             );
         }
-        return $this->actionIndex();
+        return $this->render('index', [
+            'model' => new ReportForm()
+        ]);
     }
 
     public function actionPeriodo()
@@ -104,7 +113,7 @@ class ReportController extends Controller
                 ->where(['anio_academico' => $_POST['year']])
                 ->all();
 
-            $rta = '<option value="">Seleccione Período</option>';
+            $rta = '<option value="">' . Yii::t('app', 'Select Period') . '</option>';
             foreach ($data as $p) {
                 $rta .= '<option value="' . $p->periodo . '"> ' . utf8_encode($p->nombre) . '</option>';
             }
@@ -120,7 +129,7 @@ class ReportController extends Controller
                 ->where(['periodo_lectivo' => $_POST['comision']])
                 ->all();
 
-            $rta = '<option value="">Seleccione Comision</option>';
+            $rta = '<option value="">' . Yii::t('app', 'Select Cimisión') . '</option>';
             foreach ($data as $p) {
                 $rta .= '<option value="' . $p->comision . '"> ' . utf8_encode($p->nombre) . '</option>';
             }
@@ -139,7 +148,7 @@ class ReportController extends Controller
                 ])
                 ->all();
 
-            $rta = '<option value="">Seleccione Acta</option>';
+            $rta = '<option value="">' . Yii::t('app', 'Select Acta') . '</option>';
             foreach ($data as $p) {
                 $rta .= '<option value="' . $p->nro_acta . '"> ' . utf8_encode($p->nro_acta) . '</option>';
             }

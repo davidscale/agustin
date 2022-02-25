@@ -4,6 +4,7 @@
 /* @var $form yii\bootstrap4\ActiveForm */
 /* @var $model \commond\models\SignupForm */
 
+// DELEEEEEETE THIS FILE
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 

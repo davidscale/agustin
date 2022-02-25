@@ -10,9 +10,9 @@ $this->title = 'Facultadex';
 
     <div class="jumbotron text-center bg-transparent">
 
-        <h1 class="display-4">Congratulations!</h1>
+        <h1 class="display-4"><?= Yii::t('app', 'Congratulations!') ?></h1>
 
-        <p class="lead">Hello World.</p>
+        <p class="lead"><?= Yii::t('app', 'Hello World') ?></p>
     </div>
 
 </div>

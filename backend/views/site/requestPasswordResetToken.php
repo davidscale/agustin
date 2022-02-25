@@ -7,7 +7,7 @@
 use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
 
-$this->title = 'Request Password';
+$this->title = Yii::t('app', 'Request Password');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -23,15 +23,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php $form = ActiveForm::begin(['id' => 'reset-form']); ?>
 
         <div class="form-group">
-            <?= $form->field($model, 'email')->textInput(['autofocus' => true, 'placeholder' => 'Email..'])->label(false) ?>
+            <?= $form->field($model, 'email')->textInput(['autofocus' => true, 'placeholder' => Yii::t('app', 'Email')])->label(false) ?>
         </div>
 
         <div class="my-2 d-flex flex-row justify-content-end">
-            <a href="/agustin/site/login">Go back?</a>
+            <?= Html::a(Yii::t('app', 'Login?'), ['site/login']) ?>
         </div>
 
         <div class="form-group">
-            <?= Html::submitButton('Send', ['class' => 'btn btn-primary btn-block', 'name' => 'send-button']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Send'), ['class' => 'btn btn-primary btn-block', 'name' => 'send-button']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

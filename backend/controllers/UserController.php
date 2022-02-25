@@ -8,7 +8,7 @@ use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 
-use common\models\User;
+use backend\models\User;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -82,8 +82,8 @@ class UserController extends Controller
         $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->create()) {
-            
-            Yii::$app->session->setFlash('success', $model->username . ' Created!');
+
+            Yii::$app->session->setFlash('success', $model->username . ' ' . Yii::t('app', 'Created') . '!');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -103,19 +103,12 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost) {
+        echo '<pre>';var_dump(22);echo '</pre>'; die();
 
-            $model->username = $_POST['User']['username'];
-            $model->email = $_POST['User']['email'];
-            $model->status = $_POST['User']['status'];
-
-            var_dump($model);die;
-            //  TODO:: AUN NO ACTUALIZA
-            if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+        if ($model->load(Yii::$app->request->post()) /* && $model->update(false) */) {
+            Yii::$app->session->setFlash('success', $model->username . ' ' . Yii::t('app', 'Updated') . '!');
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-
 
         return $this->render('update', [
             'model' => $model,

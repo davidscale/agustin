@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 
-$this->title = 'Vista Previa del Reporte';
+$this->title = Yii::t('app', 'Preview');
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reports'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;

@@ -86,4 +86,17 @@ class RegisterForm extends Model
 
         return $this->_user;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => Yii::t('app', 'Username'),
+            'email' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
+            're_password' => Yii::t('app', 'Retry Password'),
+        ];
+    }
 }

@@ -3,7 +3,7 @@
 namespace frontend\models;
 
 use Yii;
-use common\models\User;
+use backend\models\User;
 use yii\base\Model;
 
 class ResendVerificationEmailForm extends Model
@@ -24,7 +24,7 @@ class ResendVerificationEmailForm extends Model
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'exist',
-                'targetClass' => '\common\models\User',
+                'targetClass' => '\backend\models\User',
                 'filter' => ['status' => User::STATUS_INACTIVE],
                 'message' => 'There is no user with this email address.'
             ],
@@ -58,4 +58,5 @@ class ResendVerificationEmailForm extends Model
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
     }
+}
 }
