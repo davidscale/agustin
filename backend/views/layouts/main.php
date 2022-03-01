@@ -21,14 +21,14 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Questrial">
-
+    <link rel="icon" type="image/png" href="/favicon.png" />
 
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100" style="background-image: url('<?php echo Yii::$app->params['bg_url_img'] ?>')">
 
     <header>
         <?php
@@ -50,6 +50,8 @@ AppAsset::register($this);
             $menuItems = [
                 ['label' => Yii::t('app', 'Reports'), 'url' => ['/report']],
             ];
+        } else {
+            $menuItems = [];
         }
 
 

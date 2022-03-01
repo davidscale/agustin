@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Parametro;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -31,6 +32,18 @@ class UserController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        $param = Parametro::find()
+            ->where(['parametro' => 1])
+            ->one();
+
+        Yii::$app->params['facultad'] = Yii::t('app', $param->facultad);
+        Yii::$app->params['bg_url_img'] = Yii::t('app', $param->bg_url_img);
+
+        return parent::beforeAction($action);
     }
 
     /**

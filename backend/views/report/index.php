@@ -58,43 +58,49 @@ $ubicaciones = ArrayHelper::map(
 
         <?php $form = ActiveForm::begin(['id' => 'report-form']); ?>
 
-        <div class="col">
-            <?= $form
-                ->field($model, 'report_name')->dropDownList($model->reports_name, [
-                    'id' => 'report_name',
-                    'onchange' => 'showInputsByForm(this.value)'
-                ]); ?>
+        <div class="d-flex">
+            <div class="col w-50">
+                <?= $form
+                    ->field($model, 'report_name')->dropDownList($model->reports_name, [
+                        'id' => 'report_name',
+                        'onchange' => 'showInputsByForm(this.value)'
+                    ]); ?>
+            </div>
+
+            <div class="col forms form-0 form-1 form-2 w-50">
+                <?= $form->field($model, 'anio')
+                    ->dropDownList(
+                        $anios,
+                        [
+                            'prompt' => Yii::t('app', 'Select Academic Year'),
+                            // 'required' => true,
+                            'onchange' => 'getPeriodos(this.value,"' . Yii::$app->request->baseUrl . '")'
+                        ]
+                    ); ?>
+            </div>
         </div>
 
-        <div class="col forms form-0 form-1 form-2">
-            <?= $form->field($model, 'anio')
-                ->dropDownList(
-                    $anios,
-                    [
-                        'prompt' => Yii::t('app', 'Select Academic Year'),
-                        // 'required' => true,
-                        'onchange' => 'getPeriodos(this.value,"' . Yii::$app->request->baseUrl . '")'
-                    ]
-                ); ?>
+        <div class="d-flex">
+            <div class="col forms form-0 w-50">
+                <?= $form->field($model, 'propuesta')->dropDownList($propuestas, ['prompt' => Yii::t('app', 'Select Proposal')]); ?>
+            </div>
+
+            <div class="col forms form-0 form-2 w-50">
+                <?= $form->field($model, 'ubicacion')->dropDownList($ubicaciones); ?>
+            </div>
         </div>
 
-        <div class="col forms form-0">
-            <?= $form->field($model, 'propuesta')->dropDownList($propuestas, ['prompt' => Yii::t('app', 'Select Proposal')]); ?>
-        </div>
-
-        <div class="col forms form-0 form-2">
-            <?= $form->field($model, 'ubicacion')->dropDownList($ubicaciones); ?>
-        </div>
-
-        <div class="col forms form-0 form-1 form-2">
-            <?= $form->field($model, 'periodo')
-                ->dropDownList(
-                    [],
-                    [
-                        'prompt' => Yii::t('app', 'Select Period'),
-                        'id' => 'dropDownList_periodo',
-                    ]
-                ); ?>
+        <div class="d-flex w-50">
+            <div class="col forms form-0 form-1 form-2 w-50">
+                <?= $form->field($model, 'periodo')
+                    ->dropDownList(
+                        [],
+                        [
+                            'prompt' => Yii::t('app', 'Select Period'),
+                            'id' => 'dropDownList_periodo',
+                        ]
+                    ); ?>
+            </div>
         </div>
 
         <div class="form-group my-2 d-flex justify-content-around">

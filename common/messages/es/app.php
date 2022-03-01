@@ -147,6 +147,8 @@ return [
     'Log' => 'Ingresar',
     'English' => 'Inglés',
     'Espanish' => 'Español',
+    'Day' => 'Día',
+    'Night' => 'Noche',
 
     //  Request Password Page
     'Request Password' => 'Reestablecimiento de Contraseña',

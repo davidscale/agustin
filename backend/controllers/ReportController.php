@@ -5,7 +5,7 @@ namespace backend\controllers;
 use app\models\SgaActa;
 use app\models\SgaComision;
 use app\models\SgaPeriodo;
-
+use backend\models\Parametro;
 use backend\models\ReportForm;
 
 use Yii;
@@ -38,6 +38,18 @@ class ReportController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        $param = Parametro::find()
+            ->where(['parametro' => 1])
+            ->one();
+
+        Yii::$app->params['facultad'] = Yii::t('app', $param->facultad);
+        Yii::$app->params['bg_url_img'] = Yii::t('app', $param->bg_url_img);
+
+        return parent::beforeAction($action);
     }
 
     /**

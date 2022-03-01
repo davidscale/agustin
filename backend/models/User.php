@@ -24,17 +24,11 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_ACTIVE = 10;
-    const STATUS_INACTIVE = 9;
-    const STATUS_DELETED = 0;
+    public const STATUS_ACTIVE = 10;
+    public const STATUS_INACTIVE = 9;
+    public const STATUS_DELETED = 0;
 
-    //  TODO:: must be translated
-    public $arr_status = [
-        10 => 'Active',
-        9 => 'Inactive',
-        0 => 'Deleted',
-    ];
-
+    public $arr_status;
     public $re_password;
 
     /**
@@ -51,6 +45,18 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [TimestampBehavior::class];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        $this->arr_status = [
+            self::STATUS_ACTIVE => Yii::t('app', 'Active'),
+            self::STATUS_INACTIVE => Yii::t('app', 'Inactive'),
+            self::STATUS_DELETED => Yii::t('app', 'Deleted'),
+        ];
     }
 
     /**

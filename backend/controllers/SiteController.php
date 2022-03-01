@@ -72,6 +72,7 @@ class SiteController extends Controller
         ];
     }
 
+    // TODO:: Yii::$app->params['bg_url_img'] must be setted on init of project..
     public function beforeAction($action)
     {
         $param = Parametro::find()
@@ -80,6 +81,8 @@ class SiteController extends Controller
 
         Yii::$app->params['facultad'] = Yii::t('app', $param->facultad);
         Yii::$app->params['bg_url_img'] = Yii::t('app', $param->bg_url_img);
+
+        $this->layout = 'blank';
 
         return parent::beforeAction($action);
     }
@@ -91,6 +94,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = 'main';
         return $this->render('index');
     }
 
@@ -112,7 +116,6 @@ class SiteController extends Controller
         }
 
         $model->password = '';
-        $this->layout = 'blank';
 
         return $this->render('login', [
             'model' => $model,
@@ -148,8 +151,6 @@ class SiteController extends Controller
      */
     public function actionRequestPasswordReset()
     {
-        $this->layout = 'blank';
-
         $model = new PasswordResetRequestForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
@@ -176,8 +177,6 @@ class SiteController extends Controller
      */
     public function actionResetPassword($token)
     {
-        $this->layout = 'blank';
-
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {
@@ -191,8 +190,6 @@ class SiteController extends Controller
 
             return $this->goHome();
         }
-
-        // echo '<pre>';var_dump($this->pic);echo '</pre>'; die();
 
         return $this->render('resetPassword', [
             'model' => $model,

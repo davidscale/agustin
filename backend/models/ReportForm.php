@@ -19,12 +19,7 @@ require '../../vendor/autoload.php';
  */
 class ReportForm extends Model
 {
-    //  TODO:: must be translated
-    public $reports_name = [
-        0 => 'Course Notes',
-        1 => 'Academic Performance of Chairs',
-        2 => 'Students Enrolled to Course',
-    ];
+    public $reports_name;
 
     public $report_name;
     public $propuesta;
@@ -38,6 +33,15 @@ class ReportForm extends Model
     private $name_arc;
 
     private $_report;
+
+    public function init()
+    {
+        $this->reports_name = [
+            0 => Yii::t('app', 'Course Notes'),
+            1 => Yii::t('app', 'Academic Performance of Chairs'),
+            2 => Yii::t('app', 'Students Enrolled to Course'),
+        ];
+    }
 
     /**
      * {@inheritdoc}
