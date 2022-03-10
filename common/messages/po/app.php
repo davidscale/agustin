@@ -145,22 +145,11 @@ return [
     'Username' => 'Nombre de Usuario',
     'Password' => 'Contraseña',
     'Log' => 'Ingresar',
-    'English' => 'Inglés',
-    'Espanish' => 'Español',
-    'Day' => 'Día',
-    'Night' => 'Noche',
 
     //  Request Password Page
     'Request Password' => 'Reestablecimiento de Contraseña',
-    'Check your email for further instructions' => 'Revise su correo electrónico para obtener más instrucciones',
-    'Sorry, we are unable to reset password for the provided email address' => 'Lo sentimos, no podemos restablecer la contraseña para la dirección de correo electrónico proporcionada',
-    'New password saved' => 'Nueva contraseña guardada',
     'Email' => 'Correo',
     'Login?' => '¿Iniciar Sesión?',
-    'Send' => 'Enviar',
-
-    //  Request Password Page
-    'Reset Password' => 'Cambiar Contraseña',
     'Send' => 'Enviar',
 
     //  Layout Main
@@ -191,42 +180,13 @@ return [
     'Error when generating excel' => 'Error al momento de generar excel',
     'Search found no results' => 'La búsqueda no encontró resultados',
     'Note: Only the first 10 (ten) results are shown to you. When generating Excel, the complete result will be generated' =>
-    'Nota: sólo se le muestran los primeros 10 (diez) resultados. Al generar Excel se le generará el resultado completo',
+        'Nota: sólo se le muestran los primeros 10 (diez) resultados. Al generar Excel se le generará el resultado completo',
 
-
+    
     //  User Index Page
     'List of Users' => 'Lista de Usuarios',
-    'Create User' => 'Agregar Usuario',
     'Active' => 'Activo',
     'Inactive' => 'Inactivo',
-    'Deleted' => 'Eliminado',
     'Ubication' => 'Ubicación',
-    'Status' => 'Estado',
-    'Created At' => 'Creado En',
-    'Updated At' => 'Actualizado En',
 
-    //  User Create Page
-    'Retry Password' => 'Repetir Contraseña',
-    'Save' => 'Guardar',
-    'Created' => 'Creado',
-
-    //  User Update Page
-    'User' => 'Usuario',
-    'Update User:' => 'Repetir Contraseña',
-
-    //  Error Page
-    'Forbidden' => 'Prohibido',
-    'The above error occurred while the Web server was processing your request' => 'El error anterior ocurrió mientras el servidor web procesaba su solicitud',
-    'Please contact to' => 'Por favor contactar a',
-    'if you think this is a server error. Thank you' => 'si cree que se trata de un error del servidor. Gracias',
-    'Thank you for contacting us. We will respond to you as soon as possible' => 'Usuario',
-    'There was an error sending your message' => 'Hubo un error al enviar tu mensaje',
-    'Thank you for registration. Please check your inbox for verification email' => 'Gracias por registrarse. Por favor revise su bandeja de entrada para ver el correo electrónico de verificación',
-    'Check your email for further instructions' => 'Revise su correo electrónico para obtener más instrucciones',
-    'Sorry, we are unable to reset password for the provided email address' => 'Lo sentimos, no podemos restablecer la contraseña de la dirección de correo electrónico proporcionada',
-    'New password saved' => 'Nueva contraseña guardada',
-    'Your email has been confirmed!' => '¡Tu correo ha sido confirmado!',
-    'Sorry, we are unable to verify your account with provided token' => 'Lo sentimos, no podemos verificar su cuenta con el token proporcionado',
-    'Check your email for further instructions' => 'Revise su correo electrónico para obtener más instrucciones',
-    'Sorry, we are unable to resend verification email for the provided email address' => 'Lo sentimos, no podemos reenviar el correo electrónico de verificación para la dirección de correo electrónico proporcionada',
 ];

@@ -127,7 +127,7 @@ class ReportController extends Controller
 
             $rta = '<option value="">' . Yii::t('app', 'Select Period') . '</option>';
             foreach ($data as $p) {
-                $rta .= '<option value="' . $p->periodo . '"> ' . utf8_encode($p->nombre) . '</option>';
+                $rta .= '<option value="' . $p->periodo . '"> ' . $p->nombre . '</option>';
             }
 
             echo $rta;
@@ -143,7 +143,7 @@ class ReportController extends Controller
 
             $rta = '<option value="">' . Yii::t('app', 'Select Cimisión') . '</option>';
             foreach ($data as $p) {
-                $rta .= '<option value="' . $p->comision . '"> ' . utf8_encode($p->nombre) . '</option>';
+                $rta .= '<option value="' . $p->comision . '"> ' . $p->nombre . '</option>';
             }
 
             echo $rta;
@@ -162,7 +162,7 @@ class ReportController extends Controller
 
             $rta = '<option value="">' . Yii::t('app', 'Select Acta') . '</option>';
             foreach ($data as $p) {
-                $rta .= '<option value="' . $p->nro_acta . '"> ' . utf8_encode($p->nro_acta) . '</option>';
+                $rta .= '<option value="' . $p->nro_acta . '"> ' . $p->nro_acta . '</option>';
             }
 
             echo $rta;

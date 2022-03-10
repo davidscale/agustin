@@ -12,7 +12,7 @@ $this->title = 'Facultadex';
 
         <h1 class="display-4"><?= Yii::t('app', 'Congratulations!') ?></h1>
 
-        <p class="lead"><?= Yii::t('app', 'Hello World') ?></p>
+        <p class="lead">Hola feo</p>
     </div>
 
 </div>

@@ -56,7 +56,9 @@ $ubicaciones = ArrayHelper::map(
 
         <h1 class="text-center mb-4"><?= Html::encode($this->title) ?></h1>
 
-        <?php $form = ActiveForm::begin(['id' => 'report-form']); ?>
+        <?php $form = ActiveForm::begin([
+            'id' => 'report-form',
+        ]); ?>
 
         <div class="d-flex">
             <div class="col w-50">
@@ -105,7 +107,7 @@ $ubicaciones = ArrayHelper::map(
 
         <div class="form-group my-2 d-flex justify-content-around">
             <?= Html::submitButton(Yii::t('app', 'Preview'), ['class' => 'btn btn-primary', 'name' => 'btn-view', 'onClick' => 'showSpinner()']) ?>
-            <?= Html::submitButton(Yii::t('app', 'Download'), ['class' => 'btn btn-success', 'name' => 'btn-excel', 'onClick' => 'changeAction()']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Download'), ['class' => 'btn btn-success', 'name' => 'btn-excel', 'onClick' => 'changeAction("' . Yii::$app->request->baseUrl . '")']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
@@ -119,6 +121,10 @@ $ubicaciones = ArrayHelper::map(
 </div>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        showInputsByForm();
+    });
+
     function showInputsByForm(num) {
         if (!num) {
             num = 0;
@@ -161,24 +167,9 @@ $ubicaciones = ArrayHelper::map(
         })
     }
 
-    function getComisiones(comision, url) {
-        $.ajax({
-            url: url + '/report/comision',
-            type: 'POST',
-            data: {
-                comision: comision
-            },
-            success: function(res) {
-                $('#dropDownList_comision').html(res);
-            },
-            error: function() {
-                console.log("Error");
-            }
-        })
-    }
-
-    function changeAction() {
-        document.getElementById("report-form").action = 'report/generate';
+    function changeAction(url) {
+        url += '/report/generate';
+        document.getElementById("report-form").action = url;
 
         showSpinner();
         setTimeout("hideSpinner()", 3000); // after 3 secs
