@@ -7,8 +7,6 @@ $this->title = Yii::t('app', 'Preview');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reports'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-$data_aux = array_slice((array) $data, 0, 10);
-
 ?>
 
 <div class="report-view bg-color">
@@ -37,10 +35,10 @@ $data_aux = array_slice((array) $data, 0, 10);
                     </thead>
                     <tbody>
 
-                        <?php foreach ($data_aux as $r) { ?>
+                        <?php foreach ($data as $r) { ?>
                             <tr>
                                 <th scope="row"><?php echo $r['nro_documento'] ?></th>
-                                <td><?php echo $r['materia'] ?></td>
+                                <td><?php echo $r['code_subject'] ?></td>
                                 <td><?php echo $r['cond_regularidad'] ?></td>
                                 <td><?php echo $r['resultado'] ?></td>
                                 <td><?php echo $r['nota'] ?></td>
@@ -68,9 +66,9 @@ $data_aux = array_slice((array) $data, 0, 10);
                     </thead>
                     <tbody>
 
-                        <?php foreach ($data_aux as $r) { ?>
+                        <?php foreach ($data as $r) { ?>
                             <tr>
-                                <th scope="row"><?php echo $r['materia'] ?></th>
+                                <th scope="row"><?php echo $r['code_subject'] ?></th>
                                 <td><?php echo $r['catedra'] ?></td>
                                 <td><?php echo $r['aprob'] ?></td>
                                 <td><?php echo $r['repro'] ?></td>
@@ -93,7 +91,7 @@ $data_aux = array_slice((array) $data, 0, 10);
                     </thead>
                     <tbody>
 
-                        <?php foreach ($data_aux as $r) { ?>
+                        <?php foreach ($data as $r) { ?>
                             <tr>
                                 <th scope="row"><?php echo $r['comision'] ?></th>
                                 <td><?php echo $r['catedra'] ?></td>

@@ -7,7 +7,7 @@ use app\models\SgaComision;
 use app\models\SgaPeriodo;
 use backend\models\Parametro;
 use backend\models\ReportForm;
-
+use backend\models\SgaElemento;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -30,6 +30,7 @@ class ReportController extends Controller
                             'periodo',
                             'comision',
                             'acta',
+                            'elemento',
                             'generate'
                         ],
                         'allow' => true,
@@ -73,7 +74,7 @@ class ReportController extends Controller
      */
     public function actionView($model)
     {
-        if ($data = $model->generate()) {
+        if ($data = $model->generate(10)) {
 
             Yii::$app->session->setFlash(
                 'warning',
@@ -166,6 +167,30 @@ class ReportController extends Controller
             }
 
             echo $rta;
+        }
+    }
+
+    public function actionElemento()
+    {
+        if ($periodo = $_POST['periodo']) {
+            $command = "SELECT 
+                    e.nombre, 
+                    e.codigo
+
+                FROM sga_elementos e
+
+                LEFT JOIN sga_comisiones co ON e.elemento = co.elemento
+                LEFT JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo 
+                LEFT JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
+
+                WHERE pl.periodo = $periodo
+                AND e.estado = 'A'
+                
+                GROUP BY e.nombre, e.codigo
+                ORDER BY e.nombre";
+
+            $data = Yii::$app->db_guarani->createCommand($command)->queryAll();
+            echo json_encode($data);
         }
     }
 }

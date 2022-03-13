@@ -116,8 +116,6 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        echo '<pre>';var_dump(22);echo '</pre>'; die();
-
         if ($model->load(Yii::$app->request->post()) /* && $model->update(false) */) {
             Yii::$app->session->setFlash('success', $model->username . ' ' . Yii::t('app', 'Updated') . '!');
             return $this->redirect(['view', 'id' => $model->id]);

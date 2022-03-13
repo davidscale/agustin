@@ -26,6 +26,7 @@ class ReportForm extends Model
     public $anio;
     public $ubicacion;
     public $periodo;
+    public $elements;   //filter elements at the moment to report
 
     // Will be used in the Xlsx generated
     private $title;
@@ -49,6 +50,7 @@ class ReportForm extends Model
     public function rules()
     {
         return [
+            ['elements', 'default'],
             ['report_name', 'required'],
             [
                 ['propuesta', 'anio', 'ubicacion', 'periodo'],
@@ -94,6 +96,7 @@ class ReportForm extends Model
             'anio' => Yii::t('app', 'Year'),
             'ubicacion' => Yii::t('app', 'Ubication'),
             'periodo' => Yii::t('app', 'Period'),
+            'elements' => Yii::t('app', 'Materias'),
         ];
     }
 
@@ -102,11 +105,11 @@ class ReportForm extends Model
      *
      * @return Report|null
      */
-    public function generate()
+    public function generate($limit = 'ALL')
     {
         if ($this->validate()) {
 
-            $query = $this->getQuery();
+            $query = $this->getQuery() . "LIMIT " . $limit;
             $data = Yii::$app->db_guarani->createCommand($query)->queryAll();
 
             if ($data) {
@@ -122,78 +125,87 @@ class ReportForm extends Model
     private function getQuery()
     {
         $rta = null;
+        $filter_elements_command = "";
+
+        if ($this->elements) {
+            foreach ($this->elements as $e) {
+                $filter_elements_command .= "AND ele.codigo != '" . $e . "' ";
+            }
+        }
 
         switch ($this->report_name) {
             case 0:
                 $rta = "SELECT 
-                    per.apellido,
-                    per.nombres,
-                    pd.nro_documento,
-                    co.nombre AS comision,
-                    ma.codigo AS materia,
-                    ad.cond_regularidad,
-                    
-                    CASE
-                        WHEN (ad.resultado = 'A') THEN 'P'
-                        WHEN (ad.resultado = 'R') THEN 'N'
-                        WHEN (ad.resultado = 'U') THEN 'U'
-                        END AS resultado,
-                    CASE 
-                        WHEN (ad.nota = 'Ausente') THEN ''
-                        ELSE ad.nota
-                        END AS nota,
+                            per.apellido,
+                            per.nombres,
+                            pd.nro_documento,
+                            co.nombre AS comision,
+                            ele.codigo AS code_subject,
+                            ad.cond_regularidad,
+                            
+                            CASE
+                                WHEN (ad.resultado = 'A') THEN 'P'
+                                WHEN (ad.resultado = 'R') THEN 'N'
+                                WHEN (ad.resultado = 'U') THEN 'U'
+                                END AS resultado,
+                            CASE 
+                                WHEN (ad.nota = 'Ausente') THEN ''
+                                ELSE ad.nota
+                                END AS nota,
 
-                    to_char(ad.fecha, 'DD/MM/YYYY') AS fecha,
-                    libro.nro_libro,
-                    acta.nro_acta,
-                    ad.folio,
-                    ad.renglon,
-                    acta.renglones_folio,
-                    acta.origen
+                            to_char(ad.fecha, 'DD/MM/YYYY') AS fecha,
+                            libro.nro_libro,
+                            acta.nro_acta,
+                            ad.folio,
+                            ad.renglon,
+                            acta.renglones_folio,
+                            acta.origen
+                        FROM sga_comisiones AS co
 
-                    FROM sga_comisiones AS co
-                    JOIN sga_elementos AS ma ON co.elemento = ma.elemento
-                    JOIN sga_actas AS acta ON co.comision = acta.comision
-                    LEFT JOIN sga_actas_detalle AS ad ON acta.id_acta = ad.id_acta
-                    JOIN sga_actas_folios AS af ON acta.id_acta = af.id_acta AND af.folio = ad.folio
-                    JOIN sga_libros_tomos AS lt ON af.libro_tomo = lt.libro_tomo
-                    JOIN sga_libros_actas AS libro ON lt.libro = libro.libro
-                    LEFT JOIN sga_cond_regularidad AS cr ON ad.cond_regularidad = cr.cond_regularidad
-                    LEFT JOIN sga_escalas_notas_resultado AS enr ON ad.resultado = enr.resultado
-                    JOIN sga_alumnos AS alu ON ad.alumno = alu.alumno
-                    JOIN mdp_personas AS per ON alu.persona = per.persona
-                    JOIN mdp_personas_documentos AS pd ON alu.persona = pd.persona
-                    JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo
-                    JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
+                        JOIN sga_elementos AS ele ON co.elemento = ele.elemento
+                        JOIN sga_actas AS acta ON co.comision = acta.comision
+                        LEFT JOIN sga_actas_detalle AS ad ON acta.id_acta = ad.id_acta
+                        JOIN sga_actas_folios AS af ON acta.id_acta = af.id_acta AND af.folio = ad.folio
+                        JOIN sga_libros_tomos AS lt ON af.libro_tomo = lt.libro_tomo
+                        JOIN sga_libros_actas AS libro ON lt.libro = libro.libro
+                        LEFT JOIN sga_cond_regularidad AS cr ON ad.cond_regularidad = cr.cond_regularidad
+                        LEFT JOIN sga_escalas_notas_resultado AS enr ON ad.resultado = enr.resultado
+                        JOIN sga_alumnos AS alu ON ad.alumno = alu.alumno
+                        JOIN mdp_personas AS per ON alu.persona = per.persona
+                        JOIN mdp_personas_documentos AS pd ON alu.persona = pd.persona
+                        JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo
+                        JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
 
-                    WHERE pl.periodo = $this->periodo 
-                    AND co.ubicacion = $this->ubicacion 
-                    AND acta.origen = 'P'
+                        WHERE co.ubicacion = $this->ubicacion 
+                        AND acta.origen = 'P'
+                        AND pl.periodo = $this->periodo
+                        $filter_elements_command    /*  remove subjects selected by user */
 
-                    ORDER BY 1,3";
+                        ORDER BY 1, 3";
                 break;
 
             case 1:
                 $rta = "SELECT 
-                            e.codigo AS materia, 
+                            ele.codigo AS code_subject, 
                             ca.nombre AS catedra, 
                             COUNT (CASE WHEN d.resultado = 'U' THEN 1 ELSE NULL END) AS aprob, 
                             COUNT (CASE WHEN d.resultado = 'A' THEN 1 ELSE NULL END) AS repro, 
                             COUNT (CASE WHEN d.resultado != 'U' AND d.resultado != 'A' THEN 1 ELSE NULL END) AS ausen
+                        FROM negocio.sga_actas a 
 
-                        FROM sga_actas a 
+                        LEFT JOIN negocio.sga_actas_detalle d ON a.id_acta = d.id_acta
+                        LEFT JOIN negocio.sga_comisiones co ON a.comision = co.comision
+                        LEFT JOIN negocio.sga_catedras ca ON co.catedra = ca.catedra
+                        LEFT JOIN negocio.sga_elementos ele ON co.elemento = ele.elemento
 
-                        LEFT JOIN sga_actas_detalle d ON a.id_acta = d.id_acta
-                        LEFT JOIN sga_comisiones co ON a.comision = co.comision
-                        LEFT JOIN sga_catedras ca ON co.catedra = ca.catedra
-                        LEFT JOIN sga_elementos e ON co.elemento = e.elemento
+                        JOIN negocio.sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo 
+                        JOIN negocio.sga_periodos AS ps ON pl.periodo = ps.periodo
 
-                        JOIN sga_periodos_lectivos AS pl ON co.periodo_lectivo = pl.periodo_lectivo 
-                        JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
-
-                        WHERE a.origen = 'P' AND pl.periodo = $this->periodo
+                        WHERE a.origen = 'P' 
+                        AND pl.periodo = $this->periodo
+                        $filter_elements_command    /*  remove subjects selected by user */
                         
-                        GROUP BY ca.nombre, co.elemento, materia
+                        GROUP BY ca.nombre, co.elemento, ele.codigo
                         ORDER BY 1, 2";
                 break;
 
@@ -206,8 +218,10 @@ class ReportForm extends Model
                             per.nombres,
                             pc.email,
                             per.usuario,
-                            ele.nombre AS materia 
+                            ele.nombre AS materia,
+                            ele.codigo AS code_subject
                         FROM mdp_personas AS per
+
                         LEFT JOIN mdp_personas_documentos AS pd ON per.persona = pd.persona
                         LEFT JOIN mdp_personas_contactos AS pc ON per.persona = pc.persona
                         LEFT JOIN sga_alumnos AS alu ON per.persona = alu.persona
@@ -218,10 +232,12 @@ class ReportForm extends Model
                         JOIN sga_periodos_lectivos AS pl ON com.periodo_lectivo = pl.periodo_lectivo
                         JOIN sga_periodos AS ps ON pl.periodo = ps.periodo
 
-                        WHERE pl.periodo = $this->periodo
+                        WHERE pc.contacto_tipo = 'MP'
                         AND com.ubicacion = $this->ubicacion
-                        AND pc.contacto_tipo = 'MP'
-                        ORDER BY 3;";
+                        AND pl.periodo = $this->periodo
+                        $filter_elements_command    /*  remove subjects selected by user */
+
+                        ORDER BY 3";
                 break;
         }
         return $rta;
@@ -405,7 +421,7 @@ class ReportForm extends Model
         foreach ($this->_report as $row) {
             $sheet
                 ->setCellValue($min_word . $counter, '' . $row['nro_documento'])
-                ->setCellValue('B' . $counter, '' . $row['materia'])
+                ->setCellValue('B' . $counter, '' . $row['code_subject'])
                 ->setCellValue('C' . $counter, '' . $row['cond_regularidad'])
                 ->setCellValue('D' . $counter, '' . $row['resultado'])
                 ->setCellValue('E' . $counter, '' . $row['nota'])
@@ -547,7 +563,7 @@ class ReportForm extends Model
         $i = 5;
         foreach ($this->_report as $row) {
             $sheet
-                ->setCellValue($min_word . $i, $row['materia'])
+                ->setCellValue($min_word . $i, $row['code_subject'])
                 ->setCellValue('B' . $i, $row['catedra'])
                 ->setCellValue('C' . $i, $row['aprob'])
                 ->setCellValue('E' . $i, $row['repro'])
